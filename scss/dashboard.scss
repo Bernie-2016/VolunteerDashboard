@@ -1,0 +1,197 @@
+$bernieblue: #147FD7;
+
+@mixin afterBundle() {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+body {
+  font-family: 'Open Sans', serif;
+  margin: 0;
+  padding: 0;
+
+  h1 { font-size: 2em; }
+  h2 { font-size: 1.5em; }
+
+  a { color: $bernieblue; }
+
+  overflow: hidden;
+}
+
+header {
+  width: 100vw;
+  height: 60px;
+  position: fixed;
+  z-index: 100;
+  box-shadow: 0px 2px 3px rgba(0,0,0,0.1);
+  background-color: white;
+
+  * { vertical-align: middle }
+
+  img { height:  35px; margin: 10px;}
+  div#logo { float: left; }
+  nav {
+    float: right;
+  }
+}
+
+
+
+section#filters {
+
+  h1 { margin : 0; font-size: 24px; font-weight: 100;}
+  sub { display: inline-block; font-size: 11px; }
+
+  position: fixed;
+  top: 60px;
+  width: 210px;
+  height: calc(100vh - 100px);
+  padding: 20px;
+
+  background: whitesmoke;
+  border-right: 3px solid rgba(211, 211, 211, 0.14);
+
+  div.subscript {
+    font-size: 0.5em;
+  }
+
+  div.filter-item {
+    margin-top: 20px;
+    border: rgba(211, 211, 211, 0.33) 1px solid;
+    padding: 5px;
+    border-radius: 4px;
+
+    max-height: calc(45vh - 113px );
+
+
+    h4 { font-size: 12px; font-weight: 400; color: gray; margin: 0; padding-bottom: 2px;}
+
+    div.filter-item-container {
+      overflow: auto;
+      max-height: calc(45vh - 16px - 113px);
+      width: 100%;
+      ul {
+        padding: 0; margin: 0;
+        .filter-item-list {
+          list-style-type: none; padding: 0; margin: 0;
+          margin-bottom: 2px;
+
+          input[type='checkbox'] { display: none; }
+          input[type='checkbox'] ~ label {
+            font-size: 10px;
+            cursor: pointer;
+
+            span {
+              color: #333333;
+              &.checker { color: gray;  padding-right: 3px; }
+              vertical-align: top;
+              display: inline-block;
+            }
+          }
+
+          input[type='checkbox']:checked ~ label {
+            span.checker  { color: $bernieblue; }
+          }
+
+        }
+      }
+
+      &#type-filter-list {
+        ul li.filter-item-list label span.namer { width: 180px;}
+      }
+      &#region-filter-list {
+        ul li.filter-item-list {
+          display: inline-block;
+          width: 48%;
+          &:nth-child(2n) {
+            margin-right: 1%;
+          }
+        }
+      }
+    }
+  }
+}
+
+section#charts {
+  div#loader {
+    position: fixed;
+    left: calc(74px + 50vw);
+    background-color: whitesmoke;
+    padding: 4px 12px;
+    border-radius: 3px;
+    border: 1px lightgray solid;
+    z-index: 2000;
+    font-size: 11px;
+  }
+
+  h1 {
+    margin: 0; font-size: 24px;
+    font-weight: 100;
+    border-bottom: 1px solid #EBEBEB;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+
+  div.chart-group h2 {
+    padding-top: 20px;
+    border-top: 1px solid #EBEBEB;
+    margin-top: 20px;
+  }
+
+  div.chart-group.first-child h2 {
+    border: none;
+    padding-top: 0; margin-top: 0;
+  }
+
+  div.chart-group {
+    div.overall-growth {
+      margin-bottom: 20px;
+      ul {
+        li {
+          position: relative;
+          display: inline-block;
+          width: calc(25% - 5px);
+          margin-right: 5px;
+          margin-bottom: -2px;
+
+          div.growth-item-title {
+            position: absolute;
+            z-index: 1000;
+            text-transform: uppercase;
+            font-size: 10px;
+            color: gray;
+            margin: 1px 0 0 3px;
+          }
+          div.overall-growth-item {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            border: 1px solid #ebebeb;
+            background: whitesmoke;
+          }
+        }
+      }
+      @include afterBundle();
+    }
+  }
+
+  margin-top: 60px;
+  float: right;
+  width: calc(100vw - 290px);
+  padding: 20px;
+  height: calc(100vh - 100px);
+  overflow: auto;
+
+  h2 { font-size: 17px; text-align: center; }
+  h4 {
+    font-size: 12px;
+    color: gray;
+  }
+
+}

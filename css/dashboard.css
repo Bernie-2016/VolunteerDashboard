@@ -1,0 +1,159 @@
+body {
+  font-family: 'Open Sans', serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; }
+  body h1 {
+    font-size: 2em; }
+  body h2 {
+    font-size: 1.5em; }
+  body a {
+    color: #147FD7; }
+
+header {
+  width: 100vw;
+  height: 60px;
+  position: fixed;
+  z-index: 100;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
+  background-color: white; }
+  header * {
+    vertical-align: middle; }
+  header img {
+    height: 35px;
+    margin: 10px; }
+  header div#logo {
+    float: left; }
+  header nav {
+    float: right; }
+
+section#filters {
+  position: fixed;
+  top: 60px;
+  width: 210px;
+  height: calc(100vh - 100px);
+  padding: 20px;
+  background: whitesmoke;
+  border-right: 3px solid rgba(211, 211, 211, 0.14); }
+  section#filters h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 100; }
+  section#filters sub {
+    display: inline-block;
+    font-size: 11px; }
+  section#filters div.subscript {
+    font-size: 0.5em; }
+  section#filters div.filter-item {
+    margin-top: 20px;
+    border: rgba(211, 211, 211, 0.33) 1px solid;
+    padding: 5px;
+    border-radius: 4px;
+    max-height: calc(45vh - 113px ); }
+    section#filters div.filter-item h4 {
+      font-size: 12px;
+      font-weight: 400;
+      color: gray;
+      margin: 0;
+      padding-bottom: 2px; }
+    section#filters div.filter-item div.filter-item-container {
+      overflow: auto;
+      max-height: calc(45vh - 16px - 113px);
+      width: 100%; }
+      section#filters div.filter-item div.filter-item-container ul {
+        padding: 0;
+        margin: 0; }
+        section#filters div.filter-item div.filter-item-container ul .filter-item-list {
+          list-style-type: none;
+          padding: 0;
+          margin: 0;
+          margin-bottom: 2px; }
+          section#filters div.filter-item div.filter-item-container ul .filter-item-list input[type='checkbox'] {
+            display: none; }
+          section#filters div.filter-item div.filter-item-container ul .filter-item-list input[type='checkbox'] ~ label {
+            font-size: 10px;
+            cursor: pointer; }
+            section#filters div.filter-item div.filter-item-container ul .filter-item-list input[type='checkbox'] ~ label span {
+              color: #333333;
+              vertical-align: top;
+              display: inline-block; }
+              section#filters div.filter-item div.filter-item-container ul .filter-item-list input[type='checkbox'] ~ label span.checker {
+                color: gray;
+                padding-right: 3px; }
+          section#filters div.filter-item div.filter-item-container ul .filter-item-list input[type='checkbox']:checked ~ label span.checker {
+            color: #147FD7; }
+      section#filters div.filter-item div.filter-item-container#type-filter-list ul li.filter-item-list label span.namer {
+        width: 180px; }
+      section#filters div.filter-item div.filter-item-container#region-filter-list ul li.filter-item-list {
+        display: inline-block;
+        width: 48%; }
+        section#filters div.filter-item div.filter-item-container#region-filter-list ul li.filter-item-list:nth-child(2n) {
+          margin-right: 1%; }
+
+section#charts {
+  margin-top: 60px;
+  float: right;
+  width: calc(100vw - 290px);
+  padding: 20px;
+  height: calc(100vh - 100px);
+  overflow: auto; }
+  section#charts div#loader {
+    position: fixed;
+    left: calc(74px + 50vw);
+    background-color: whitesmoke;
+    padding: 4px 12px;
+    border-radius: 3px;
+    border: 1px lightgray solid;
+    z-index: 2000;
+    font-size: 11px; }
+  section#charts h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 100;
+    border-bottom: 1px solid #EBEBEB;
+    padding-bottom: 20px;
+    margin-bottom: 20px; }
+  section#charts div.chart-group h2 {
+    padding-top: 20px;
+    border-top: 1px solid #EBEBEB;
+    margin-top: 20px; }
+  section#charts div.chart-group.first-child h2 {
+    border: none;
+    padding-top: 0;
+    margin-top: 0; }
+  section#charts div.chart-group div.overall-growth {
+    margin-bottom: 20px; }
+    section#charts div.chart-group div.overall-growth ul li {
+      position: relative;
+      display: inline-block;
+      width: calc(25% - 5px);
+      margin-right: 5px;
+      margin-bottom: -2px; }
+      section#charts div.chart-group div.overall-growth ul li div.growth-item-title {
+        position: absolute;
+        z-index: 1000;
+        text-transform: uppercase;
+        font-size: 10px;
+        color: gray;
+        margin: 1px 0 0 3px; }
+      section#charts div.chart-group div.overall-growth ul li div.overall-growth-item {
+        position: relative;
+        width: 100%;
+        height: 150px;
+        border: 1px solid #ebebeb;
+        background: whitesmoke; }
+    section#charts div.chart-group div.overall-growth:after {
+      visibility: hidden;
+      display: block;
+      font-size: 0;
+      content: " ";
+      clear: both;
+      height: 0; }
+  section#charts h2 {
+    font-size: 17px;
+    text-align: center; }
+  section#charts h4 {
+    font-size: 12px;
+    color: gray; }
+
+/*# sourceMappingURL=dashboard.css.map */
