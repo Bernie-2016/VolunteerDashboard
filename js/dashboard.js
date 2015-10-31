@@ -26,6 +26,10 @@ var bernieCharts = function(overallData) {
   this.typeFilter = null, this.regionFilter = null;
   this.chartRegEvents = null, this.chartTypeEvents = null, this.chartTypeRsvp = null, this.chartRegRsvp;
 
+  /***
+    clearAll - removes / destroys all elements in preparation for switching states
+    other solutions, cache it.
+  */
   this.clearAll = function() {
 
     var that = this;
@@ -37,7 +41,6 @@ var bernieCharts = function(overallData) {
 
     for(var i in that.regionGrowthRsvps) { that.regionGrowthRsvps[i].destroy(); that.regionGrowthRsvps[i] = null;}
     that.regionGrowthRsvps = {};
-
     that.regionGrowth.remove();
     that.regionGrowthRsvpList.remove();
 
@@ -60,13 +63,14 @@ var bernieCharts = function(overallData) {
     // $(".chart-group").hide();
   };
 
+  /***
+    draw(params) - draws the filters and charts
+  */
   this.draw = function(params) {
 
     params = params || {}; //null check
 
     var that = this;
-    //Arrange New York Data
-    //get dates
     var dates = [];
     var regionTally = {};
     var typeTally = {};
@@ -77,7 +81,7 @@ var bernieCharts = function(overallData) {
     params.state = params.state || "all";
 
 
-
+    // Take data and set name
     if (params.state == "all") {
       target_state = that.overallData.total;
       $("#state-target").text("All States");
@@ -86,6 +90,7 @@ var bernieCharts = function(overallData) {
       $("#state-target").text(that.states[params.state]);
     }
 
+    // This block arranges the data to be consumable by C3
     for( region in target_state ) {
       regionList[region] = [];
 
@@ -95,33 +100,39 @@ var bernieCharts = function(overallData) {
         mapType[date] = mapType[date] || {};
         for ( type in target_state[region][date] ) {
 
+          if (!mapType[date][type]) { mapType[date][type] = { rsvp: 0, count: 0 }; }
+
           typeList[type] = [];
 
-          //Filter Type
+          // Filter Type
           if (params.t && params.t.indexOf(type) >= 0) { continue; }
-
-
-
-          mapType[date][type] = mapType[date][type] || {rsvp : 0, count : 0};
-
-          if ((params.r && params.r.indexOf(region)) >= 0 )  { continue; }
+          if (params.r && params.r.indexOf(region) >= 0 )  { continue; }
           tRSVP += target_state[region][date][type].rsvp;
           tEvent += target_state[region][date][type].count;
-          mapType[date][type].rsvp += target_state[region][date][type].rsvp;
-          mapType[date][type].count += target_state[region][date][type].count;
+          mapType[date][type].rsvp = mapType[date][type].rsvp
+                                        ? target_state[region][date][type].rsvp
+                                        : (mapType[date][type].rsvp + target_state[region][date][type].rsvp);
+          mapType[date][type].count = mapType[date][type].count
+                                        ? target_state[region][date][type].count
+                                        : (mapType[date][type].count + target_state[region][date][type].count);
         }
 
-        if ((params.r && params.r.indexOf(region)) >= 0 )  { continue; }
-        mapRegion[date] = mapRegion[date] || {};
+        if (!mapRegion[date]) {
+          mapRegion[date] = {};
+        }
+        if( !mapRegion[date][region] ) {
+          mapRegion[date][region] = {"rsvp" : 0, "count" : 0 };
+        }
+
+        if (params.r && params.r.indexOf(region) >= 0 )  { continue; }
         mapRegion[date][region] = {"rsvp": tRSVP, "count" : tEvent};
         //mapRegion.push({"region" : region, "date": date, "rsvp" s: tRSVP, "events" : tEvent});
       }
-    }
+    } // end of arranging data
 
     var dateArray = [];
     for(date in dateList) { dateArray.push(date); }
     dateArray = dateArray.sort(function(a, b) { var d1 = new Date(a), d2  = new Date(b); return d1 - d2; });
-
 
     for( i in dateArray ) {
 
@@ -145,17 +156,17 @@ var bernieCharts = function(overallData) {
         growthRegionEvents = [], growthRegPercEvents = [],
         growthTypePercRSVP = [], growthTypePercEvents = [];
 
-
+    // Build region growth for RSVP and Event counts
     for ( region in regionList) {
       regionGroup.push(region);
       regionRSVP.push([].concat(region, regionList[region].map(function(d) { return d.rsvp; })));
       regionEvents.push([].concat(region, regionList[region].map(function(d) { return d.count; })));
 
-
       var sumRegRSVP = 0, sumRegEvent = 0;
       var regGrowthListEvents = regionList[region].map(function(d) { sumRegEvent += d.count; return sumRegEvent; });
       var regGrowthListRSVP = regionList[region].map(function(d) { sumRegRSVP += d.rsvp; return sumRegRSVP; });
 
+      //This is for C3 consumption
       growthRegionEvents.push([].concat(region, regGrowthListEvents));
       growthRegionRSVP.push([].concat(region, regGrowthListRSVP));
 
@@ -171,10 +182,9 @@ var bernieCharts = function(overallData) {
     Since we now have the list of regions and type, we setup the filters
     */
 
-    //Region
-
+    //Region Filters
+    //We delete this everytime the user switches state
     d3.select(".region-filter .filter-counter").text("(" + regionGroup.length + ")");
-    // d3.select("#region-filter-list ul").selectAll("li").remove();
 
     if ( !that.regionFilter ) {
       that.regionFilter = d3.select("#region-filter-list ul").selectAll("li").data(regionGroup).enter()
@@ -187,13 +197,8 @@ var bernieCharts = function(overallData) {
           });
     }
 
-      // that.regionFilter.exit()
-
-
+    //We just hide some items if the user switches state, as to maintain the type filters
     d3.select(".type-filter .filter-counter").text("(" + typeGroup.length + ")");
-    // d3.select("#type-filter-list ul").selectAll("li").remove();
-    console.log(typeGroup);
-    // if ( !that.typeFilter ) {
     that.typeFilter = d3.select("#type-filter-list ul").selectAll("li").data(typeGroup);
     that.typeFilter.style("display", "block")
     that.typeFilter.enter()
@@ -205,11 +210,10 @@ var bernieCharts = function(overallData) {
           +"/><label for='" + d + "'><span class='checker'>&#9673;</span><span class='namer'>" + d + "</span></label>"
         })
 
-    that.typeFilter.exit().style("display", "none").each(function(d,i) { console.log(d,i);});
+    that.typeFilter.exit().style("display", "none");
     // }
 
-    // //Build Chart for REGION EVENT COUNTS;
-
+    //Build Chart for REGION EVENT COUNTS;
     if (that.chartRegEvents) {
       that.chartRegEvents.load({
           columns:[].concat([dateCol], regionEvents),
@@ -233,8 +237,9 @@ var bernieCharts = function(overallData) {
               }
           }
         }); //end chartRegRsvp
-     }
+     } // End of building charts for Region Event Counts
 
+    // Build chart for Event Counts by Type
     if (that.chartTypeEvents) {
       that.chartTypeEvents.load( {
         columns:[].concat([dateCol], typeEvents),
@@ -257,8 +262,9 @@ var bernieCharts = function(overallData) {
             }
         }
       }); //end chartTypeEvents
-    }
+    } //end of Event Counts by Type rendering
 
+    // Build chart for RSVP count by Region
     if (that.chartRegRsvp) {
       that.chartRegRsvp.load({
           columns:[].concat([dateCol], regionRSVP),
@@ -281,8 +287,9 @@ var bernieCharts = function(overallData) {
             }
         }
       }); //end chartRegRsvp
-    }
+    } // End of RSVP Count by Region
 
+    //Build RSVP count by Type charts
     if (that.chartTypeRsvp) {
       that.chartTypeRsvp.load( {
         columns:[].concat([dateCol], typeRSVP),
@@ -306,15 +313,13 @@ var bernieCharts = function(overallData) {
             }
         }
       }); //end chartTypeRsvp
-    }
+    } // End of RSVP count by type chart
 
 
-    // growthRegionRSVP = [], growthRegPercRSVP = [],
-    // growthRegionEvents = [], growthRegPercEvents = [],
-
-    // d3.selectAll(".overall-growth.event-region ul li").remove();
-
-    //  return params.r ? params.r.indexOf(d[0]) < 0 : true; }));
+    /**
+      Start of showing region growth.
+      - Regions that are marked as hidden are just set to `display: none`
+    */
     that.regionGrowth = d3.select(".overall-growth.event-region ul")
       .selectAll("li.growth-list-item")
       .data(growthRegionEvents.filter(function(d) { return params.r ? params.r.indexOf(d[0]) < 0 : true; }), function(d) { return d[0]; } );
@@ -347,6 +352,9 @@ var bernieCharts = function(overallData) {
       that.regionGrowthEvents[d[0]].load({columns: [].concat([dateCol], [d], [growth])});
     });
 
+    /**
+      Append items
+    */
     var regionGrowthEnter = that.regionGrowth.enter()
         .append("li")
           .attr("class", "growth-list-item")
@@ -356,10 +364,12 @@ var bernieCharts = function(overallData) {
             return "<div class='growth-item-title'>" + d[0] + " • " + d[d.length-1] + "</div><div class='overall-growth-item event-region-item " + d[0] + "'></div>"
           })
           .each(function(d,i) {
+
+            /* For each LI, we build the data to be consumable by C3, and then we build C3 */
             var currentAmount = 0;
-            // var copy = d;
             var growth = null;
 
+            // Mapping for Chart data
             growth = d.map(function(item,i) {
 
               if (i == 0) { return "growth"; }
@@ -378,7 +388,7 @@ var bernieCharts = function(overallData) {
               }
             });
 
-            // d[0] = "total events";
+            // Building the chart
             that.regionGrowthEvents[d[0]] = c3.generate({
               size: {
                 height: 150
@@ -412,10 +422,10 @@ var bernieCharts = function(overallData) {
 
 
 
-      /* RSVP */
-      that.regionGrowthRsvpList = d3.select(".overall-growth.rsvp-region ul")
-        .selectAll("li.growth-list-item")
-        .data(growthRegionRSVP.filter(function(d) { return params.r ? params.r.indexOf(d[0]) < 0 : true; }), function(d) { return d[0]; } );
+    /* RSVP Growth - Essentially the same as region event count, this time focused on RSVP*/
+    that.regionGrowthRsvpList = d3.select(".overall-growth.rsvp-region ul")
+      .selectAll("li.growth-list-item")
+      .data(growthRegionRSVP.filter(function(d) { return params.r ? params.r.indexOf(d[0]) < 0 : true; }), function(d) { return d[0]; } );
 
     that.regionGrowthRsvpList.style("display", "inline-block").each(function(d, i) {
       var currentAmount = 0;
