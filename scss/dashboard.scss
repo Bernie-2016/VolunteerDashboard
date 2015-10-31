@@ -1,4 +1,5 @@
 $bernieblue: #147FD7;
+$berniered: #F55B5B;
 
 @mixin afterBundle() {
   &:after {
@@ -38,6 +39,22 @@ header {
   div#logo { float: left; }
   nav {
     float: right;
+  }
+
+  a#project-lead {
+    padding: 6px 10px;
+    background-color: $berniered;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 1px;
+    float: right;
+    margin-top: 15px;
+    text-decoration: none;
+    margin-right: 8px;
+    border-radius: 4px;
+
   }
 }
 
