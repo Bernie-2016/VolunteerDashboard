@@ -3,50 +3,64 @@ var all = null;
 var timeFormat = d3.time.format("%m/%d/%Y %X");
 var dateFormat = d3.time.format("%Y-%m-%d");
 var dateList = {}, regionList = {}, typeList = {};
+var nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate()+30);
 
 var bernieChartInstance = null;
 
-d3.csv("./d/data2.csv", function(d) {
-
-  city_week = d.reduce(function(hash, obj) {
-
-    //set boundaries
-    // if (obj.Official == "yes") { return hash; }
-
-    var parsedTime = timeFormat.parse(obj.EventDate);
-
-    parsedTime.setDate(parsedTime.getDate()-parsedTime.getDay());
-
-    var date = dateFormat(parsedTime);
-    hash[obj.VenueState] = hash[obj.VenueState] || {};
-    hash[obj.VenueState][obj.region] = hash[obj.VenueState][obj.region] || {};
-    hash[obj.VenueState][obj.region][date] = hash[obj.VenueState][obj.region][date] || {};
-
-    hash[obj.VenueState][obj.region][date][obj.EventType] = hash[obj.VenueState][obj.region][date][obj.EventType] || { "rsvp" : 0, "count": 0};
-
-    hash[obj.VenueState][obj.region][date][obj.EventType].rsvp += parseInt(obj.RSVPS);
-    hash[obj.VenueState][obj.region][date][obj.EventType].count ++;
-
-    return hash;
-
-  }, {});
-
-  bernieChartInstance = new bernieCharts(city_week);
-  $("div#loader").hide();
-
-
-
-});
+$.ajax({
+    url: "./js/aggregated-data.js",
+    dataType: "script",
+    success: function() {
+      bernieChartInstance = new bernieCharts(window.aggregatedData);
+      $("div#loader").hide();
+    }
+  });
 
 
 var bernieCharts = function(overallData) {
+  this.states = {"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California","CO":"Colorado","CT":"Connecticut","DE":"Delaware","DC":"District Of Columbia","FL":"Florida","GA":"Georgia","HI":"Hawaii","ID":"Idaho","IL":"Illinois","IN":"Indiana","IA":"Iowa","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts","MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana","NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VI":"Virgin Islands","VA":"Virginia","WA":"Washington","WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming"};
   this.overallData = overallData;
-
   this.chartRegRsvp = null;
+  this.regionGrowthEvents = {};
+  this.regionGrowthRsvps = {};
+  this.typeFilter = null, this.regionFilter = null;
+  this.chartRegEvents = null, this.chartTypeEvents = null, this.chartTypeRsvp = null, this.chartRegRsvp;
+
+  this.clearAll = function() {
+
+    var that = this;
+
+    $("#state-target").text("Loading");
+
+    for(var i in that.regionGrowthEvents) { that.regionGrowthEvents[i].destroy(); that.regionGrowthEvents[i] = null;}
+    that.regionGrowthEvents = {};
+
+    for(var i in that.regionGrowthRsvps) { that.regionGrowthRsvps[i].destroy(); that.regionGrowthRsvps[i] = null;}
+    that.regionGrowthRsvps = {};
+
+    that.regionGrowth.remove();
+    that.regionGrowthRsvpList.remove();
+
+    // that.typeFilter.remove(); that.typeFilter = null;
+    that.typeFilter.style("display", "none");
+    that.regionFilter.remove(); that.regionFilter = null;
+
+    d3.select(".region-filter .filter-counter").text("");
+    d3.select(".type-filter .filter-counter").text("");
+
+    that.chartTypeEvents.destroy(); that.chartTypeEvents = null;
+    that.chartRegRsvp.destroy(); that.chartRegRsvp = null;
+    that.chartRegEvents.destroy(); that.chartRegEvents = null;
+    that.chartTypeRsvp.destroy(); that.chartTypeRsvp = null;
+
+    delete dateList; delete regionList; delete typeList;
+    dateList = {}; regionList = {}; typeList = {};
+
+
+    // $(".chart-group").hide();
+  };
+
   this.draw = function(params) {
-
-    //Show loader...
-
 
     params = params || {}; //null check
 
@@ -60,13 +74,20 @@ var bernieCharts = function(overallData) {
     var mapRegion = {};
     var mapType = {};
 
-    var target_state = that.overallData[window.global_state];
+    params.state = params.state || "all";
+
+
+
+    if (params.state == "all") {
+      target_state = that.overallData.total;
+      $("#state-target").text("All States");
+    } else {
+      target_state = that.overallData[params.state];
+      $("#state-target").text(that.states[params.state]);
+    }
+
     for( region in target_state ) {
       regionList[region] = [];
-
-      //Filter Region
-      // if ((params.r && params.r.indexOf(region)) >= 0 )  { continue; }
-
 
       for ( date in target_state[region] ) {
         var tRSVP = 0, tEvent = 0;
@@ -93,7 +114,7 @@ var bernieCharts = function(overallData) {
         if ((params.r && params.r.indexOf(region)) >= 0 )  { continue; }
         mapRegion[date] = mapRegion[date] || {};
         mapRegion[date][region] = {"rsvp": tRSVP, "count" : tEvent};
-        //mapRegion.push({"region" : region, "date": date, "rsvp" : tRSVP, "events" : tEvent});
+        //mapRegion.push({"region" : region, "date": date, "rsvp" s: tRSVP, "events" : tEvent});
       }
     }
 
@@ -142,7 +163,6 @@ var bernieCharts = function(overallData) {
 
     for ( type in typeList) {
       typeGroup.push(type);
-
       typeRSVP.push([].concat(type, typeList[type].map(function(d) { return d.rsvp; })));
       typeEvents.push([].concat(type, typeList[type].map(function(d) { return d.count; })));
     }
@@ -152,10 +172,12 @@ var bernieCharts = function(overallData) {
     */
 
     //Region
+
     d3.select(".region-filter .filter-counter").text("(" + regionGroup.length + ")");
-    d3.select("#region-filter-list ul").selectAll("li").remove();
-    d3.select("#region-filter-list ul").selectAll("li").data(regionGroup)
-      .enter()
+    // d3.select("#region-filter-list ul").selectAll("li").remove();
+
+    if ( !that.regionFilter ) {
+      that.regionFilter = d3.select("#region-filter-list ul").selectAll("li").data(regionGroup).enter()
         .append("li")
           .attr("class", "region-filter-item-list filter-item-list")
           .html(function(d) {
@@ -163,25 +185,37 @@ var bernieCharts = function(overallData) {
               (params.r && params.r.indexOf(d)>=0 ? "" : "checked='checked'" )
               +"/><label for='" + d + "'><span class='checker'>&#9673;</span><span class='namer'>" + d + "</span></label>"
           });
+    }
+
+      // that.regionFilter.exit()
+
 
     d3.select(".type-filter .filter-counter").text("(" + typeGroup.length + ")");
-    d3.select("#type-filter-list ul").selectAll("li").remove();
-    d3.select("#type-filter-list ul").selectAll("li").data(typeGroup)
-      .enter()
-        .append("li")
-          .attr("class", "type-filter-item-list filter-item-list")
-          .html(function(d) {
-            return "<input type='checkbox' value='"+ d +"' name='t' id='" + d + "' " +
-            (params.t && params.t.indexOf(d)>=0 ?  "" : "checked='checked'")
-            +"/><label for='" + d + "'><span class='checker'>&#9673;</span><span class='namer'>" + d + "</span></label>"
-          });
+    // d3.select("#type-filter-list ul").selectAll("li").remove();
+    console.log(typeGroup);
+    // if ( !that.typeFilter ) {
+    that.typeFilter = d3.select("#type-filter-list ul").selectAll("li").data(typeGroup);
+    that.typeFilter.style("display", "block")
+    that.typeFilter.enter()
+      .append("li")
+        .attr("class", "type-filter-item-list filter-item-list")
+        .html(function(d) {
+          return "<input type='checkbox' value='"+ d +"' name='t' id='" + d + "' " +
+          (params.t && params.t.indexOf(d)>=0 ?  "" : "checked='checked'")
+          +"/><label for='" + d + "'><span class='checker'>&#9673;</span><span class='namer'>" + d + "</span></label>"
+        })
+
+    that.typeFilter.exit().style("display", "none").each(function(d,i) { console.log(d,i);});
+    // }
 
     // //Build Chart for REGION EVENT COUNTS;
+
     if (that.chartRegEvents) {
       that.chartRegEvents.load({
           columns:[].concat([dateCol], regionEvents),
       });
     } else {
+
        that.chartRegEvents = c3.generate({
           bindto: '#by-region',
           data: {
@@ -278,11 +312,42 @@ var bernieCharts = function(overallData) {
     // growthRegionRSVP = [], growthRegPercRSVP = [],
     // growthRegionEvents = [], growthRegPercEvents = [],
 
-    d3.selectAll(".overall-growth.event-region ul li").remove();
-    d3.select(".overall-growth.event-region ul")
+    // d3.selectAll(".overall-growth.event-region ul li").remove();
+
+    //  return params.r ? params.r.indexOf(d[0]) < 0 : true; }));
+    that.regionGrowth = d3.select(".overall-growth.event-region ul")
       .selectAll("li.growth-list-item")
-      .data(growthRegionEvents.filter(function(d) { return params.r ? params.r.indexOf(d[0]) < 0 : true; }))
-        .enter()
+      .data(growthRegionEvents.filter(function(d) { return params.r ? params.r.indexOf(d[0]) < 0 : true; }), function(d) { return d[0]; } );
+
+    that.regionGrowth.style("display", "inline-block").each(function(d, i) {
+      var currentAmount = 0;
+        var growth = null;
+
+        growth = d.map(function(item,i) {
+
+          if (i == 0) { return "growth"; }
+
+          if (i == 1 || item == 0) { currentAmount = item; return null; }
+          else if (currentAmount == 0 && item != 0 ) {
+            currentAmount = item;
+            return item;
+          } else {
+
+            var growthRate = parseFloat(item) - parseFloat(currentAmount);
+
+            currentAmount = item;
+
+            return growthRate;
+          }
+        });
+
+        //
+        d3.select(this).select(".growth-item-title").text(d[0] + " • " + currentAmount);
+
+      that.regionGrowthEvents[d[0]].load({columns: [].concat([dateCol], [d], [growth])});
+    });
+
+    var regionGrowthEnter = that.regionGrowth.enter()
         .append("li")
           .attr("class", "growth-list-item")
           .attr("data-region", function(d) { return d[0]; })
@@ -313,8 +378,8 @@ var bernieCharts = function(overallData) {
               }
             });
 
-            d[0] = "total events";
-            c3.generate({
+            // d[0] = "total events";
+            that.regionGrowthEvents[d[0]] = c3.generate({
               size: {
                 height: 150
               },
@@ -341,21 +406,52 @@ var bernieCharts = function(overallData) {
                   },
               }
             });
-          })
+          });
+
+      that.regionGrowth.exit().style("display", "none");
 
 
 
-    d3.selectAll(".overall-growth.rsvp-region ul li").remove();
-    d3.select(".overall-growth.rsvp-region ul")
-      .selectAll("li.growth-list-item")
-      .data(growthRegionRSVP.filter(function(d) { return params.r ? params.r.indexOf(d[0]) < 0 : true; }))
-        .enter()
+      /* RSVP */
+      that.regionGrowthRsvpList = d3.select(".overall-growth.rsvp-region ul")
+        .selectAll("li.growth-list-item")
+        .data(growthRegionRSVP.filter(function(d) { return params.r ? params.r.indexOf(d[0]) < 0 : true; }), function(d) { return d[0]; } );
+
+    that.regionGrowthRsvpList.style("display", "inline-block").each(function(d, i) {
+      var currentAmount = 0;
+        var growth = null;
+
+        growth = d.map(function(item,i) {
+
+          if (i == 0) { return "growth"; }
+
+          if (i == 1 || item == 0) { currentAmount = item; return null; }
+          else if (currentAmount == 0 && item != 0 ) {
+            currentAmount = item;
+            return item;
+          } else {
+
+            var growthRate = parseFloat(item) - parseFloat(currentAmount);
+
+            currentAmount = item;
+
+            return growthRate;
+          }
+        });
+
+        //
+        d3.select(this).select(".growth-item-title").text(d[0] + " • " + currentAmount);
+
+      that.regionGrowthRsvps[d[0]].load({columns: [].concat([dateCol], [d], [growth])});
+    });
+
+    var regionGrowthRsvpEnter = that.regionGrowthRsvpList.enter()
         .append("li")
           .attr("class", "growth-list-item")
           .attr("data-region", function(d) { return d[0]; })
           .attr("id", function(d) { return d[0]; })
           .html(function(d) {
-            return "<div class='growth-item-title'>" + d[0]  + " • " + d[d.length-1] + "</div><div class='overall-growth-item rsvp-region-item " + d[0] + "'></div>"
+            return "<div class='growth-item-title'>" + d[0] + " • " + d[d.length-1] + "</div><div class='overall-growth-item rsvp-region-item " + d[0] + "'></div>"
           })
           .each(function(d,i) {
             var currentAmount = 0;
@@ -373,7 +469,6 @@ var bernieCharts = function(overallData) {
               } else {
 
                 var growthRate = parseFloat(item) - parseFloat(currentAmount);
-                // growthRate = (growthRate - 1) * 100;
 
                 currentAmount = item;
 
@@ -381,8 +476,8 @@ var bernieCharts = function(overallData) {
               }
             });
 
-            d[0] = "total RSVPs";
-            c3.generate({
+            // d[0] = "total events";
+            that.regionGrowthRsvps[d[0]] = c3.generate({
               size: {
                 height: 150
               },
@@ -409,16 +504,28 @@ var bernieCharts = function(overallData) {
                   },
               }
             });
-          })
+          });
+
+      that.regionGrowthRsvpList.exit().style("display", "none");
 
     /* Show Growth.. */
 
+    // $(".chart-group").show();
 
   }; // end of draw()
 
   this.initialize = function () {
     var that = this;
-    that.draw($.deparam(window.location.hash.substring(1)));
+    //Load states...
+    $("select#states").append($("<option/>").val("all").text("All States"));
+    for (var i in that.states) {
+      $("select#states").append($("<option/>").val(i).text(that.states[i]));
+    }
+
+    var params = $.deparam(window.location.hash.substring(1));
+    that.draw(params);
+    $("select#states,#global-filters input[name='state']").val(params.state);
+
   };
 
   this.initialize();
@@ -426,14 +533,30 @@ var bernieCharts = function(overallData) {
 
 
 /* Set event listeners*/
-var hashchangeManager = null;
 $(function() {
   $("#global-filters").on("change", "input[type='checkbox']", function() {
-    $("div#loader").show();
+    // alert("XXXX");
+    $("#global-filters").submit();
+  });
 
-    setTimeout(function() {
-      window.location.hash = $.param($("#global-filters input:not(:checked)"));
-    }, 10);
+  $("#global-filters").on("submit", null, function() {
+    // alert("XXXX");
+    $("div#loader").show();
+    // setTimeout(function() {
+      window.location.hash = $.param($("#global-filters input[type='checkbox']:not(:checked), #global-filters input[name='state']"));
+    // }, 10);
+    // alert("XX");
+    return false;
+  });
+
+  $("#states").on("change", null, function() {
+    $("#global-filters input[name='state']").val($("#states").val());
+    // alert("XXXXX");
+    bernieChartInstance.clearAll();
+    $("#global-filters").submit();
+    // var newState = document.getElementById("states").value;
+    // window.location.href = window.location.pathname + "?state=" + newState
+    // $("#global-filters").
   });
 
   $(window).on("hashchange", function() {

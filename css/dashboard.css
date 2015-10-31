@@ -26,6 +26,19 @@ header {
     float: left; }
   header nav {
     float: right; }
+  header a#project-lead {
+    padding: 6px 10px;
+    background-color: #F55B5B;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 1px;
+    float: right;
+    margin-top: 15px;
+    text-decoration: none;
+    margin-right: 8px;
+    border-radius: 4px; }
 
 section#filters {
   position: fixed;
