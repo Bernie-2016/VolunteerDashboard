@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-To get up and running, first install [Vagrant](https://www.vagrantup.com) and then just run:
+To get up and running, first install [Docker](https://www.vagrantup.com) and then just run:
 
 `vagrant up`
 
@@ -14,10 +14,4 @@ Under the hood, when you run `vagrant up`, the app is using [Vagrant](https://ww
 
 ## Deploying
 
-Once you have permission to deploy, add the Heroku remote:
-
-`git remote add heroku git@heroku.com:volunteer-dashboard.git`
-
-Then you can deploy with
-
-`git push heroku master`
+You can d
