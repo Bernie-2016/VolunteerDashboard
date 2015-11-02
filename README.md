@@ -2,9 +2,8 @@
 
 ## Getting Started
 
-`cd src/ && python -m SimpleHTTPServer 7000`
-
-Then navigate to `http://localhost:7000` on your browser.
+1. `cd src/ && python -m SimpleHTTPServer 7000`
+2. Navigate to `http://localhost:7000`.
 
 ## Deploying
 
