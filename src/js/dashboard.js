@@ -2,6 +2,8 @@ var city_week = null;
 var all = null;
 var timeFormat = d3.time.format("%m/%d/%Y %X");
 var dateFormat = d3.time.format("%Y-%m-%d");
+var humanFormat = d3.time.format("%b %d, %Y");
+
 var dateList = {}, regionList = {}, typeList = {};
 var nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate()+30);
 
@@ -11,20 +13,73 @@ $.ajax({
     url: "./js/aggregated-data.js",
     dataType: "script",
     success: function() {
+      console.log(window.aggregatedData);
       bernieChartInstance = new bernieCharts(window.aggregatedData);
       $("div#loader").hide();
     }
   });
 
+// d3.csv("./d/data-nov.csv", function(d) {
+//     city_week = d.reduce(function(hash, obj) {
+//     //set boundaries
+//     var parsedTime = timeFormat.parse(obj.EventDate);
+
+//     parsedTime.setDate(parsedTime.getDate()-parsedTime.getDay());
+
+//     var date = dateFormat(parsedTime);
+//     hash[obj.VenueState] = hash[obj.VenueState] || {};
+//     hash[obj.VenueState][obj.region] = hash[obj.VenueState][obj.region] || {};
+//     hash[obj.VenueState][obj.region][date] = hash[obj.VenueState][obj.region][date] || {};
+
+//     hash[obj.VenueState][obj.region][date][obj.EventType] = hash[obj.VenueState][obj.region][date][obj.EventType] || { "rsvp" : 0, "count": 0};
+
+//     hash[obj.VenueState][obj.region][date][obj.EventType].rsvp += parseInt(obj.RSVPS);
+//     hash[obj.VenueState][obj.region][date][obj.EventType].count ++;
+
+//     //Total
+//     hash.total[obj.VenueState] = hash.total[obj.VenueState] || {};
+//     hash.total[obj.VenueState][date] = hash.total[obj.VenueState][date] || {};
+//     hash.total[obj.VenueState][date][obj.EventType] = hash.total[obj.VenueState][date][obj.EventType]  || { "rsvp" : 0, "count": 0};
+
+//     hash.total[obj.VenueState][date][obj.EventType].rsvp += parseInt(obj.RSVPS);
+//     hash.total[obj.VenueState][date][obj.EventType].count ++;
+
+//     return hash;
+//   }, {total: {}});
+
+//     console.log(JSON.stringify(city_week));
+
+//     bernieChartInstance = new bernieCharts(city_week);
+//     $("div#loader").hide();
+
+// });
+
+
+
 
 var bernieCharts = function(overallData) {
-  this.states = {"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California","CO":"Colorado","CT":"Connecticut","DE":"Delaware","DC":"District Of Columbia","FL":"Florida","GA":"Georgia","HI":"Hawaii","ID":"Idaho","IL":"Illinois","IN":"Indiana","IA":"Iowa","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts","MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana","NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VI":"Virgin Islands","VA":"Virginia","WA":"Washington","WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming"};
+  this.constant = {
+    dateFormat : d3.time.format("%Y-%m-%d")
+  };
+  this.constant.states = {"AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California","CO":"Colorado","CT":"Connecticut","DE":"Delaware","DC":"District Of Columbia","FL":"Florida","GA":"Georgia","HI":"Hawaii","ID":"Idaho","IL":"Illinois","IN":"Indiana","IA":"Iowa","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts","MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana","NE":"Nebraska","NV":"Nevada","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NY":"New York","NC":"North Carolina","ND":"North Dakota","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VI":"Virgin Islands","VA":"Virginia","WA":"Washington","WV":"West Virginia","WI":"Wisconsin","WY":"Wyoming"};
   this.overallData = overallData;
+  // This handles the data that is being shown by the charts. It keeps the overallData constant, but the user can  choose to change the viewed data
+  this.viewedData = overallData;
+
   this.chartRegRsvp = null;
   this.regionGrowthEvents = {};
   this.regionGrowthRsvps = {};
   this.typeFilter = null, this.regionFilter = null;
   this.chartRegEvents = null, this.chartTypeEvents = null, this.chartTypeRsvp = null, this.chartRegRsvp;
+
+  // April 1, 2015 - Nov 30, 2016
+  this.rawStartDate = "2015-04-01", this.rawEndDate = "2016-11-30";
+  this.startDate = moment().subtract(1, 'months')._d,
+  this.endDate = moment().add(1, 'months')._d;
+
+
+
+
 
   /***
     clearAll - removes / destroys all elements in preparation for switching states
@@ -63,6 +118,41 @@ var bernieCharts = function(overallData) {
     // $(".chart-group").hide();
   };
 
+  //Filter by date range
+  this.filterDateRange = function(params) {
+    var that = this;
+
+    that.startDate = params.startDate ? that.constant.dateFormat.parse(params.startDate) : that.startDate;
+    that.endDate = parse.endDate ? params.endDatethat.constant.dateFormat.parse(params.endDate) : that.endDate;
+
+    //set date boundaries
+    that.startDate.setHours(0); that.startDate.setMinutes(0); that.startDate.setSeconds(0);
+    that.endDate.setHours(23); that.endDate.setMinutes(59); that.endDate.setSeconds(59);
+
+    // console.log(that.startDate, that.endDate);
+    // // that.draw(params);
+    // for (var regionInd in that.viewedData) {
+    //   for (var dateInd in that.viewedData[regionInd]) {
+    //     if (that.constant.dateFormat.parse(dateInd) < that.startDate || that.constant.dateFormat.parse(dateInd) > that.endDate) {
+    //        delete that.viewedData[regionInd][dateInd];
+    //     }
+    //   }
+    // }
+
+  };
+
+  //Filter by state
+  this.filterState = function(params) {
+    var that = this;
+    if (params.state == "all") {
+      that.viewedData = that.overallData.total;
+      $("#state-target").text("All States");
+    } else {
+      that.viewedData = that.overallData[params.state];
+      $("#state-target").text(that.constant.states[params.state]);
+    }
+  }
+
   /***
     draw(params) - draws the filters and charts
   */
@@ -78,25 +168,43 @@ var bernieCharts = function(overallData) {
     var mapRegion = {};
     var mapType = {};
 
+    var mapOverall = {};
+    var mapByRsvp = {};
+
     params.state = params.state || "all";
-
-
+    var target_state = that.viewedData;
     // Take data and set name
     if (params.state == "all") {
       target_state = that.overallData.total;
       $("#state-target").text("All States");
     } else {
       target_state = that.overallData[params.state];
-      $("#state-target").text(that.states[params.state]);
+      $("#state-target").text(that.constant.states[params.state]);
     }
 
     // This block arranges the data to be consumable by C3
+    var startDate = params.startdate ? dateFormat.parse(params.startdate) : that.startDate,
+        endDate = params.enddate ? dateFormat.parse(params.enddate) : that.endDate;
+
     for( region in target_state ) {
       regionList[region] = [];
 
       for ( date in target_state[region] ) {
+
+        //If date is within the date ranges
+        var currDate = dateFormat.parse(date);
+
+        // console.log(region, currDate);
+        if ( currDate < startDate || currDate > endDate )  {
+
+          // console.log("REJECTED", region, currDate);
+          delete dateList[date];
+          continue;
+        } else {
+          dateList[date] = dateList[date] || true;
+        }
         var tRSVP = 0, tEvent = 0;
-        dateList[date] = dateList[date] || true;
+
         mapType[date] = mapType[date] || {};
         for ( type in target_state[region][date] ) {
 
@@ -109,12 +217,9 @@ var bernieCharts = function(overallData) {
           if (params.r && params.r.indexOf(region) >= 0 )  { continue; }
           tRSVP += target_state[region][date][type].rsvp;
           tEvent += target_state[region][date][type].count;
-          mapType[date][type].rsvp = mapType[date][type].rsvp
-                                        ? target_state[region][date][type].rsvp
-                                        : (mapType[date][type].rsvp + target_state[region][date][type].rsvp);
-          mapType[date][type].count = mapType[date][type].count
-                                        ? target_state[region][date][type].count
-                                        : (mapType[date][type].count + target_state[region][date][type].count);
+
+          mapType[date][type].rsvp += target_state[region][date][type].rsvp;
+          mapType[date][type].count += target_state[region][date][type].count;
         }
 
         if (!mapRegion[date]) {
@@ -126,9 +231,15 @@ var bernieCharts = function(overallData) {
 
         if (params.r && params.r.indexOf(region) >= 0 )  { continue; }
         mapRegion[date][region] = {"rsvp": tRSVP, "count" : tEvent};
+
+        //Get total mapping
+        mapOverall[date] = mapOverall[date] ? {rsvp: mapOverall[date].rsvp + tRSVP,
+                            count: mapOverall[date].count + tEvent} : {rsvp: 0, count: 0};
         //mapRegion.push({"region" : region, "date": date, "rsvp" s: tRSVP, "events" : tEvent});
       }
     } // end of arranging data
+
+    // console.log(mapOverall);
 
     var dateArray = [];
     for(date in dateList) { dateArray.push(date); }
@@ -528,13 +639,23 @@ var bernieCharts = function(overallData) {
     var that = this;
     //Load states...
     $("select#states").append($("<option/>").val("all").text("All States"));
-    for (var i in that.states) {
-      $("select#states").append($("<option/>").val(i).text(that.states[i]));
+    for (var i in that.constant.states) {
+      $("select#states").append($("<option/>").val(i).text(that.constant.states[i]));
     }
 
     var params = $.deparam(window.location.hash.substring(1));
     that.draw(params);
     $("select#states,#global-filters input[name='state']").val(params.state);
+
+    // console.log(params.startdate);
+    if (params.enddate && params.startdate) {
+      $("#global-filters input[name='from-date']").val(params.startdate);
+      $("#global-filters input[name='to-date']").val(params.enddate);
+      // console.log(humanFormat(dateFormat.parse(params.startdate)), humanFormat(dateFormat.parse(params.enddate)));
+      $("#date-filter").data('dateRangePicker').setDateRange(humanFormat(dateFormat.parse(params.startdate)), humanFormat(dateFormat.parse(params.enddate)));
+    } else {
+      $("#date-filter").data('dateRangePicker').setDateRange(humanFormat(that.startDate), humanFormat(that.endDate));
+    }
 
   };
 
@@ -544,6 +665,32 @@ var bernieCharts = function(overallData) {
 
 /* Set event listeners*/
 $(function() {
+   /* Initialize datepicker */
+  $("#date-filter").dateRangePicker({
+    separator : ' - ',
+    format: 'MMM DD, YYYY',
+    getValue: function()
+    {
+      if ($('#from-date').val() && $('#to-date').val() )
+        return $('#from-date').val() + ' - ' + $('#to-date').val();
+      else
+        return '';
+    },
+    batchMode: 'week-range',
+    showShortcuts: false,
+    setValue: function(s,s1,s2)
+    {
+      $('#from-date').val(s1);
+      $('#to-date').val(s2);
+    }
+  })
+  .bind('datepicker-change', function(event, obj) {
+    // console.log(dateFormat(obj.date1));
+    $("#global-filters input[name='startdate']").val(dateFormat(obj.date1));
+    $("#global-filters input[name='enddate']").val(dateFormat(obj.date2));
+    $("#global-filters").submit();
+  });
+
   $("#global-filters").on("change", "input[type='checkbox']", function() {
     // alert("XXXX");
     $("#global-filters").submit();
@@ -553,7 +700,7 @@ $(function() {
     // alert("XXXX");
     $("div#loader").show();
     // setTimeout(function() {
-      window.location.hash = $.param($("#global-filters input[type='checkbox']:not(:checked), #global-filters input[name='state']"));
+      window.location.hash = $.param($("#global-filters input[type='checkbox']:not(:checked), #global-filters input[type='hidden']"));
     // }, 10);
     // alert("XX");
     return false;
