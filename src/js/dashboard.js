@@ -304,7 +304,7 @@ var bernieCharts = function(overallData) {
           .html(function(d) {
             return "<input type='checkbox' value='"+ d +"' name='r' id='" + d + "' " +
               (params.r && params.r.indexOf(d)>=0 ? "" : "checked='checked'" )
-              +"/><label for='" + d + "'><span class='checker'>&#9673;</span><span class='namer'>" + d + "</span></label>"
+              +"/><label for='" + d + "'><span class='checker'></span><span class='namer'>" + d + "</span></label>"
           });
     }
 
@@ -318,7 +318,7 @@ var bernieCharts = function(overallData) {
         .html(function(d) {
           return "<input type='checkbox' value='"+ d +"' name='t' id='" + d + "' " +
           (params.t && params.t.indexOf(d)>=0 ?  "" : "checked='checked'")
-          +"/><label for='" + d + "'><span class='checker'>&#9673;</span><span class='namer'>" + d + "</span></label>"
+          +"/><label for='" + d + "'><span class='checker'></span><span class='namer'>" + d + "</span></label>"
         })
 
     that.typeFilter.exit().style("display", "none");

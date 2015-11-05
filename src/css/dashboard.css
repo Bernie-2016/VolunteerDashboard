@@ -91,10 +91,17 @@ section#filters {
               vertical-align: top;
               display: inline-block; }
               section#filters div.filter-item div.filter-item-container ul .filter-item-list input[type='checkbox'] ~ label span.checker {
-                color: gray;
-                padding-right: 3px; }
+                background-color: lightgray;
+                border-radius: 50%;
+                width: 8px;
+                height: 8px;
+                display: inline-block;
+                margin-right: 3px;
+                border: whitesmoke solid 2px;
+                margin-top: 2px; }
           section#filters div.filter-item div.filter-item-container ul .filter-item-list input[type='checkbox']:checked ~ label span.checker {
-            color: #147FD7; }
+            background-color: #147FD7;
+            border: white solid 2px; }
       section#filters div.filter-item div.filter-item-container#type-filter-list ul li.filter-item-list label span.namer {
         width: 180px; }
       section#filters div.filter-item div.filter-item-container#region-filter-list ul li.filter-item-list {

@@ -106,18 +106,33 @@ section#filters {
 
             span {
               color: #333333;
-              &.checker { color: gray;  padding-right: 3px; }
+
+
+              &.checker {
+                background-color: lightgray;
+                border-radius: 50%;
+                width: 8px;
+                height: 8px;
+                display: inline-block;
+                margin-right: 3px;
+
+                border: whitesmoke solid 2px;
+                margin-top: 2px;
+
+              }
               vertical-align: top;
               display: inline-block;
             }
           }
 
           input[type='checkbox']:checked ~ label {
-            span.checker  { color: $bernieblue; }
+            span.checker  { background-color: $bernieblue; border: white solid 2px; }
           }
 
         }
       }
+
+
 
       &#type-filter-list {
         ul li.filter-item-list label span.namer { width: 180px;}
