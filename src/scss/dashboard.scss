@@ -153,12 +153,61 @@ section#charts {
     border-bottom: 1px solid #EBEBEB;
     padding-bottom: 20px;
     margin-bottom: 20px;
+
+    #date-filter-container {
+      float: right;
+      position: relative;
+      #date-filter {
+
+      }
+
+      h5 {
+
+    font-size: 11px;
+    margin: 0;
+    color: gray;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+
+      }
+    }
+    &:after {
+       visibility: hidden;
+     display: block;
+     font-size: 0;
+     content: " ";
+     clear: both;
+     height: 0;
+    }
+
+    #date-filter {
+      input {
+
+    padding: 3px;
+    border: 2px solid lightgray;
+    border-width: 0 0 2px 0;
+    text-align: center;
+    font-family: 'Open Sans';
+    font-size: 15px;
+    width: 110px;
+
+      }
+    }
   }
 
-  div.chart-group h2 {
-    padding-top: 20px;
-    border-top: 1px solid #EBEBEB;
-    margin-top: 20px;
+  div.chart-group{
+    h2 {
+      padding-top: 20px;
+      border-top: 1px solid #EBEBEB;
+      margin-top: 20px;
+
+    }
+
+    &.first h2 {
+      margin-top: 0;
+      border: none;
+    }
   }
 
   div.chart-group.first-child h2 {
