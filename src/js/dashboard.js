@@ -343,7 +343,7 @@ var bernieCharts = function(overallData) {
               x: {
                   type: 'timeseries',
                   tick: {
-                      format: 'Week of %b %d'
+                      format: 'Week starting %b %d'
                   }
               }
           }
@@ -368,7 +368,7 @@ var bernieCharts = function(overallData) {
             x: {
                 type: 'timeseries',
                 tick: {
-                    format: 'Week of %b %d'
+                    format: 'Week starting %b %d'
                 }
             }
         }
@@ -393,7 +393,7 @@ var bernieCharts = function(overallData) {
             x: {
                 type: 'timeseries',
                 tick: {
-                    format: 'Week of %b %d'
+                    format: 'Week starting %b %d'
                 }
             }
         }
@@ -419,7 +419,7 @@ var bernieCharts = function(overallData) {
             x: {
                 type: 'timeseries',
                 tick: {
-                    format: 'Week of %b %d'
+                    format: 'Week starting %b %d'
                 }
             }
         }
@@ -519,7 +519,7 @@ var bernieCharts = function(overallData) {
                       show: false,
                       type: 'timeseries',
                       tick: {
-                          format: 'Week of %b %d'
+                          format: 'Week starting %b %d'
                       }
                   },
                   y: {
@@ -617,7 +617,7 @@ var bernieCharts = function(overallData) {
                       show: false,
                       type: 'timeseries',
                       tick: {
-                          format: 'Week of %b %d'
+                          format: 'Week starting %b %d'
                       }
                   },
                   y: {
