@@ -46,7 +46,7 @@ $.ajax({
 //     return hash;
 //   }, {total: {}});
 
-//     console.log(JSON.stringify(city_week));
+
 
 //     bernieChartInstance = new bernieCharts(city_week);
 //     $("div#loader").hide();
@@ -128,7 +128,7 @@ var bernieCharts = function(overallData) {
     that.startDate.setHours(0); that.startDate.setMinutes(0); that.startDate.setSeconds(0);
     that.endDate.setHours(23); that.endDate.setMinutes(59); that.endDate.setSeconds(59);
 
-    // console.log(that.startDate, that.endDate);
+
     // // that.draw(params);
     // for (var regionInd in that.viewedData) {
     //   for (var dateInd in that.viewedData[regionInd]) {
@@ -193,10 +193,10 @@ var bernieCharts = function(overallData) {
         //If date is within the date ranges
         var currDate = dateFormat.parse(date);
 
-        // console.log(region, currDate);
+
         if ( currDate < startDate || currDate > endDate )  {
 
-          // console.log("REJECTED", region, currDate);
+
           delete dateList[date];
           continue;
         } else {
@@ -238,7 +238,7 @@ var bernieCharts = function(overallData) {
       }
     } // end of arranging data
 
-    // console.log(mapOverall);
+
 
     var dateArray = [];
     for(date in dateList) { dateArray.push(date); }
@@ -646,11 +646,11 @@ var bernieCharts = function(overallData) {
     that.draw(params);
     $("select#states,#global-filters input[name='state']").val(params.state);
 
-    // console.log(params.startdate);
+
     if (params.enddate && params.startdate) {
       $("#global-filters input[name='from-date']").val(params.startdate);
       $("#global-filters input[name='to-date']").val(params.enddate);
-      // console.log(humanFormat(dateFormat.parse(params.startdate)), humanFormat(dateFormat.parse(params.enddate)));
+
       $("#date-filter").data('dateRangePicker').setDateRange(humanFormat(dateFormat.parse(params.startdate)), humanFormat(dateFormat.parse(params.enddate)));
     } else {
       $("#date-filter").data('dateRangePicker').setDateRange(humanFormat(that.startDate), humanFormat(that.endDate));
@@ -695,7 +695,7 @@ $(function() {
     }
   })
   .bind('datepicker-change', function(event, obj) {
-    // console.log(dateFormat(obj.date1));
+
     $("#global-filters input[name='startdate']").val(dateFormat(obj.date1));
     $("#global-filters input[name='enddate']").val(dateFormat(obj.date2));
     $("#global-filters").submit();
@@ -707,7 +707,7 @@ $(function() {
       var target = $(this).closest(".filter-item-container");
       var that = $("[data-target='#" + target.attr("id") + "']");
 
-    // console.log(that, target.find("input[type='checkbox']:checked").length, target.find("input[type='checkbox']").length);
+
     if( target.find("input[type='checkbox']:checked").length < target.find("input[type='checkbox']").length ) {
       that.text("Show All");
     } else {
