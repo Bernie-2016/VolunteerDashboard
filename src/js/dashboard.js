@@ -8,7 +8,7 @@ var nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate()+30);
 var bernieChartInstance = null;
 
 $.ajax({
-    url: "./js/aggregated-data.js",
+    url: "http://localhost:5000/aggregate",
     dataType: "script",
     success: function() {
       bernieChartInstance = new bernieCharts(window.aggregatedData);
@@ -83,8 +83,32 @@ var bernieCharts = function(overallData) {
 
     // Take data and set name
     if (params.state == "all") {
-      target_state = that.overallData.total;
       $("#state-target").text("All States");
+      // The totals are not sent through; reconstruct here
+      target_state = {};
+      for ( state in overallData ) {
+          if ( target_state[state] == undefined ) { 
+                  target_state[state] = {};
+          }
+          for ( clregion in overallData[state] ) {
+              for ( event_type in overallData[state][clregion] ) {
+                  for ( date in overallData[state][clregion][event_type] ) {
+                      if ( target_state[state][date] == undefined ) {
+                          target_state[state][date] = {};
+                      }
+                      if ( target_state[state][date][event_type] == undefined ) {
+                          target_state[state][date][event_type] = {};
+                      }
+                      for ( counttype in overallData[state][clregion][event_type][date] ) {
+                          if (target_state[state][date][event_type][counttype] == undefined ) {
+                              target_state[state][date][event_type][counttype] = 0;
+                          }
+                          target_state[state][date][event_type][counttype] += overallData[state][clregion][event_type][date][counttype];
+                      }
+                  }
+              }
+          }
+      }
     } else {
       target_state = that.overallData[params.state];
       $("#state-target").text(that.states[params.state]);
