@@ -13,7 +13,6 @@ $.ajax({
     url: "./js/aggregated-data.js",
     dataType: "script",
     success: function() {
-      console.log(window.aggregatedData);
       bernieChartInstance = new bernieCharts(window.aggregatedData);
       $("div#loader").hide();
     }
@@ -657,6 +656,16 @@ var bernieCharts = function(overallData) {
       $("#date-filter").data('dateRangePicker').setDateRange(humanFormat(that.startDate), humanFormat(that.endDate));
     }
 
+    $(".filter-item-container").each(function() {
+      var target = $(this);
+        var that = $("[data-target='#" + target.attr("id") + "']");
+      if( target.find("input[type='checkbox']:checked").length < target.find("input[type='checkbox']").length ) {
+        that.text("Show All");
+      } else {
+        that.text("Hide All");
+      }
+    });
+
   };
 
   this.initialize();
@@ -665,6 +674,7 @@ var bernieCharts = function(overallData) {
 
 /* Set event listeners*/
 $(function() {
+
    /* Initialize datepicker */
   $("#date-filter").dateRangePicker({
     separator : ' - ',
@@ -693,6 +703,18 @@ $(function() {
 
   $("#global-filters").on("change", "input[type='checkbox']", function() {
     // alert("XXXX");
+
+      var target = $(this).closest(".filter-item-container");
+      var that = $("[data-target='#" + target.attr("id") + "']");
+
+    // console.log(that, target.find("input[type='checkbox']:checked").length, target.find("input[type='checkbox']").length);
+    if( target.find("input[type='checkbox']:checked").length < target.find("input[type='checkbox']").length ) {
+      that.text("Show All");
+    } else {
+      that.text("Hide All");
+    }
+
+    //submit
     $("#global-filters").submit();
   });
 
@@ -716,9 +738,29 @@ $(function() {
     // $("#global-filters").
   });
 
+  $(".show-hide-all").on("click", function(e) {
+    var that = $(this);
+    var target = $(that.data().target);
+
+    if( target.find("input[type='checkbox']:checked").length < target.find("input[type='checkbox']").length ) {
+
+      target.find("input[type='checkbox']").prop("checked", true);
+      that.text("Hide All");
+    } else {
+      target.find("input[type='checkbox']").prop("checked", false);
+      that.text("Show All");
+    }
+
+    $("#global-filters").submit();
+  });
+
   $(window).on("hashchange", function() {
       var parameters = $.deparam(window.location.hash.substring(1));
       bernieChartInstance.draw(parameters);
       $("div#loader").hide();
   });
+
+  //Mark
+
+
 });
