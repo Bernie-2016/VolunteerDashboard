@@ -87,23 +87,15 @@ var bernieCharts = function(overallData) {
       // The totals are not sent through; reconstruct here
       target_state = {};
       for ( state in overallData ) {
-          if ( target_state[state] == undefined ) { 
-                  target_state[state] = {};
-          }
+          cstate = target_state[state] = target_state[state] || {};
           for ( clregion in overallData[state] ) {
-              for ( event_type in overallData[state][clregion] ) {
-                  for ( date in overallData[state][clregion][event_type] ) {
-                      if ( target_state[state][date] == undefined ) {
-                          target_state[state][date] = {};
-                      }
-                      if ( target_state[state][date][event_type] == undefined ) {
-                          target_state[state][date][event_type] = {};
-                      }
-                      for ( counttype in overallData[state][clregion][event_type][date] ) {
-                          if (target_state[state][date][event_type][counttype] == undefined ) {
-                              target_state[state][date][event_type][counttype] = 0;
-                          }
-                          target_state[state][date][event_type][counttype] += overallData[state][clregion][event_type][date][counttype];
+              for ( date in overallData[state][clregion] ) {
+                  cdate = cstate[date] = cstate[date] || {};
+                  for ( event_type in overallData[state][clregion][date] ) {
+                      cevent_type = cdate[event_type] = cdate[event_type] || {};
+                      for ( counttype in overallData[state][clregion][date][event_type] ) {
+                          cevent_type[counttype] = cevent_type[counttype] || 0;
+                          cevent_type[counttype] += overallData[state][clregion][date][event_type][counttype];
                       }
                   }
               }
