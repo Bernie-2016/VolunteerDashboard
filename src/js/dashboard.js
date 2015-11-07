@@ -11,6 +11,7 @@ var bernieChartInstance = null;
 
 $.ajax({
     url: "http://localhost:5000/aggregate",
+    headers : {'Accept-Encoding' : 'gzip'},
     dataType: "script",
     success: function() {
       console.log(window.aggregatedData);
