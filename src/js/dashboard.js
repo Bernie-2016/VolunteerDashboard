@@ -10,7 +10,8 @@ var nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate()+30);
 var bernieChartInstance = null;
 
 $.ajax({
-    url: "./js/aggregated-data.js",
+    url: "http://localhost:5000/aggregate",
+    headers : {'Accept-Encoding' : 'gzip'},
     dataType: "script",
     success: function() {
       bernieChartInstance = new bernieCharts(window.aggregatedData);
@@ -140,11 +141,32 @@ var bernieCharts = function(overallData) {
 
   };
 
+  this.compute_totals = function(overallData) {
+    // The totals are not sent through; reconstruct here
+    target_state = {};
+    for ( state in overallData ) {
+        cstate = target_state[state] = target_state[state] || {};
+        for ( clregion in overallData[state] ) {
+            for ( date in overallData[state][clregion] ) {
+                cdate = cstate[date] = cstate[date] || {};
+                for ( event_type in overallData[state][clregion][date] ) {
+                    cevent_type = cdate[event_type] = cdate[event_type] || {};
+                    for ( counttype in overallData[state][clregion][date][event_type] ) {
+                        cevent_type[counttype] = cevent_type[counttype] || 0;
+                        cevent_type[counttype] += overallData[state][clregion][date][event_type][counttype];
+                    }
+                }
+            }
+        }
+    }
+    return target_state;
+  }
+
   //Filter by state
   this.filterState = function(params) {
     var that = this;
     if (params.state == "all") {
-      that.viewedData = that.overallData.total;
+      that.viewedData = this.compute_totals(that.overallData);
       $("#state-target").text("All States");
     } else {
       that.viewedData = that.overallData[params.state];
@@ -174,8 +196,8 @@ var bernieCharts = function(overallData) {
     var target_state = that.viewedData;
     // Take data and set name
     if (params.state == "all") {
-      target_state = that.overallData.total;
       $("#state-target").text("All States");
+      target_state = this.compute_totals(that.overallData);
     } else {
       target_state = that.overallData[params.state];
       $("#state-target").text(that.constant.states[params.state]);
