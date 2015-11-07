@@ -4,6 +4,7 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,800,300' rel='stylesheet' type='text/css'>
 <link href='css/c3.min.css' rel='stylesheet' type='text/css'>
 <link href='css/dashboard.css' rel='stylesheet' type='text/css'>
+<link href='css/datepicker.css' rel='stylesheet' type='text/css'>
 <script>
   // function getParameterByName(name) {
   //   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -22,7 +23,7 @@
 <body>
 <header>
   <div id='logo'>
-    <img src='logo.png'>
+    <img src='./logo.png'>
     <span>Event Analytics</span>
     <select id='states' name='event-states'></select>
   </div>
@@ -37,6 +38,9 @@
   <sub>Changes data composition of the whole event analytics</sub>
   <form id='global-filters'>
     <input type='hidden' name='state' value='all'>
+    <input type='hidden' name='startdate' />
+    <input type='hidden' name='enddate' />
+
     <div class='filter-item region-filter'>
       <h4>Region Filters <span class='filter-counter'></span></h4>
       <div class='filter-item-container' id='region-filter-list'>
@@ -56,9 +60,15 @@
 
 <section id='charts'>
   <div id='loader'>Loading Data...</div>
-  <h1>Event Analytics - <span id='state-target'></span></h1>
+  <h1>
+    <span id='state-target'></span>
+    <span id='date-filter-container'>
+      <h5>Date Filter</h5>
+      <span id='date-filter'><input type='text' name='from-date' id='from-date'/> - <input type='' name='to-date' id='to-date' /></span>
+    </span>
+  </h1>
 
-  <div class='chart-group first-child'>
+  <div class='chart-group first'>
     <h2>Event Count</h2>
     <h4>Events By Region</h4>
     <div id='by-region'></div>
@@ -96,6 +106,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8" type='text/javascript'></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 <script src='js/deparam.min.js'></script>
+
+<!-- for datepicking -->
+<script src='js/moment.min.js' type='text/javascript'></script>
+<script src='js/datepicker.js' type='text/javascript'></script>
+
 <script src='js/dashboard.js' type='text/javascript'></script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
