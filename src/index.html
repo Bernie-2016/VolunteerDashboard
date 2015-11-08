@@ -67,9 +67,23 @@
       <h5>Date Filter</h5>
       <span id='date-filter'><input type='text' name='from-date' id='from-date'/> - <input type='' name='to-date' id='to-date' /></span>
     </span>
+    <!-- <div id='mode-area'>
+      <ul id='mode-list'>
+        <li class='mode-item'><input type='radio' name='mode' id='mode-event-count' value='event-count'/>
+            <label for='mode-event-count'>Event Count</label>
+        </li>
+        <li class='mode-item'><input type='radio' name='mode' id='mode-rsvp' value='rsvp'/>
+            <label for='mode-rsvp'>RSVP</label>
+        </li>
+        <li class='mode-item'><input type='radio' name='mode' id='mode-growth' value='growth'/>
+            <label for='mode-growth'>Growth</label>
+        </li>
+      </ul>
+    </div> -->
   </h1>
 
-  <div class='chart-group first'>
+
+  <div class='chart-group' data-mode='event-count'>
     <h2>Event Count</h2>
     <h4>Events By Region</h4>
     <div id='by-region'></div>
@@ -77,7 +91,7 @@
     <div id='by-type'></div>
   </div>
 
-  <div class='chart-group'>
+  <div class='chart-group' data-mode='rsvp'>
     <h2>RSVPs</h2>
     <h4>RSVP By Region</h4>
     <div id='rsvp-by-region'></div>
@@ -85,7 +99,7 @@
     <div id='rsvp-by-type'></div>
   </div>
 
-  <div class='chart-group'>
+  <div class='chart-group' data-mode='growth'>
     <h2>Growth</h2>
     <h4>Accumulative Growth of Events </h4>
     <div class='overall-growth event-region'>
@@ -98,7 +112,6 @@
       <ul>
       </ul>
     </div>
-
   </div>
 
 </section>

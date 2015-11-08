@@ -72,7 +72,7 @@ section#filters {
   padding: 20px;
 
   background: whitesmoke;
-  border-right: 3px solid rgba(211, 211, 211, 0.14);
+  // border-right: 3px solid rgba(211, 211, 211, 0.14);
 
   div.subscript {
     font-size: 0.5em;
@@ -174,15 +174,30 @@ section#charts {
   h1 {
     margin: 0; font-size: 24px;
     font-weight: 100;
-    border-bottom: 1px solid #EBEBEB;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
+    // border-bottom: 1px solid #EBEBEB;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+
+    #state-target {
+
+    vertical-align: bottom;
+    margin-top: 10px;
+    display: inline-block;
+    margin-left: 10px;
+
+    }
 
     #date-filter-container {
       float: right;
       position: relative;
-      #date-filter {
+      margin-top: 10px;
 
+      border: 1px solid whitesmoke;
+      padding: 13px 33px;
+      border-radius: 5px;
+
+      #date-filter {
+        font-size: 15px;
       }
 
       h5 {
@@ -220,11 +235,31 @@ section#charts {
     }
   }
 
+  div#mode-area {
+    font-size: 15px;
+    ul {
+      margin: 0;
+      padding: 0;
+      li {
+
+        &:first-child { margin-left: 0; }
+        margin: 0 10px;
+        list-style: none;
+        display: inline-block;
+
+        label { padding: 0 2px 2px; font-size: 12px; text-transform: uppercase; cursor: pointer; color: gray; }
+        input[name='mode'] { display: none; }
+        input[name='mode']:checked ~ label { border: solid $bernieblue; color: $bernieblue; border-width: 0 0 2px 0; padding-bottom: 0; font-weight: 600;}
+
+      }
+    }
+  }
+
   div.chart-group{
     h2 {
       padding-top: 20px;
-      border-top: 1px solid #EBEBEB;
-      margin-top: 20px;
+      // border-top: 1px solid #EBEBEB;
+      margin-top: 10px;
 
     }
 
@@ -240,6 +275,16 @@ section#charts {
   }
 
   div.chart-group {
+    div.c3-tooltip-container {
+      top: 0px !important;
+    }
+    div.custom-c3-tooltip-container {
+      h4 { color: white; background-color: gray; }
+      ul {
+
+      }
+    }
+
     div.overall-growth {
       margin-bottom: 20px;
       ul {

@@ -10,8 +10,11 @@ var nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate()+30);
 var bernieChartInstance = null;
 
 $.ajax({
-  url: "./js/aggregated-data.js",
-    // url: "http://organize.berniesanders.com/event-counter/aggregate",
+  // url: "./js/aggregated-data.js",
+    url: "http://organize.berniesanders.com/event-counter/aggregate",
+    // data: {
+    //   time_type: '"start_dt"'
+    // },
     headers : {'Accept-Encoding' : 'gzip'},
     dataType: "script",
     success: function() {
@@ -368,6 +371,44 @@ var bernieCharts = function(overallData) {
                       format: 'Week starting %b %d'
                   }
               }
+          },
+
+          tooltip: {
+            format: {
+              value: function(value, ratio, id) {
+                if (value > 0) {
+                  return value;
+                }
+              }
+            }
+            // grouped: true,
+            // contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
+            //   console.log(d, defaultValueFormat, defaultValueFormat, color);
+
+            //   var mapped = d.map(function(item) {
+
+            //     if (item.value == 0) {
+            //       return null;
+            //     } else {
+
+            //       // console.log(, defaultValueFormat(item.value), color(item.id));
+            //       return "<li class='item-list-item'><span class='item-title'><span class='item-block' style='background-color: " + color(item.id) + "'></span>" + item.name + "</span><span class='item-value'>" + defaultValueFormat(item.value)+ "</span></li>";
+            //     }
+            //   }).filter(function(item) { return item != null; });
+
+            //   if (mapped.length == 0) {
+            //     return null;
+            //   }
+
+            //   var mapTable = "<div class='custom-c3-tooltip-container' style='position: absolute; top: 0px !important;'><h4>" + defaultTitleFormat(d[0].x) + "</h4><ul>" +
+            //         mapped.join("")
+            //   +"</ul></div>";
+            //   console.log(mapTable);
+
+
+            //   return mapTable;
+            //   // return "X";
+            // }
           }
         }); //end chartRegRsvp
      } // End of building charts for Region Event Counts
@@ -386,6 +427,14 @@ var bernieCharts = function(overallData) {
           types: typeGroup.reduce(function(hash, obj) { hash[obj] = 'area-step'; return hash; }, {}),
           groups:[typeGroup]
         },
+        tooltip: {
+        format: {
+          value: function(value, ratio, id) {
+            if (value > 0) {
+              return value;
+            }
+          }
+        }},
         axis: {
             x: {
                 type: 'timeseries',
@@ -411,6 +460,13 @@ var bernieCharts = function(overallData) {
           types: regionGroup.reduce(function(hash, obj) { hash[obj] = 'area-spline'; return hash; }, {}),
           groups:[regionGroup],
         },
+        tooltip: {format: {
+          value: function(value, ratio, id) {
+            if (value > 0) {
+              return value;
+            }
+          }
+        }},
         axis: {
             x: {
                 type: 'timeseries',
@@ -437,6 +493,13 @@ var bernieCharts = function(overallData) {
           types: typeGroup.reduce(function(hash, obj) { hash[obj] = 'area-step'; return hash; }, {}),
           groups:[typeGroup]
         },
+        tooltip: { format: {
+          value: function(value, ratio, id) {
+            if (value > 0) {
+              return value;
+            }
+          }
+        }},
         axis: {
             x: {
                 type: 'timeseries',
