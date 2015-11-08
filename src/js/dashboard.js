@@ -10,7 +10,8 @@ var nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate()+30);
 var bernieChartInstance = null;
 
 $.ajax({
-    url: "http://localhost:5000/aggregate",
+  url: "./js/aggregated-data.js",
+    // url: "http://organize.berniesanders.com/event-counter/aggregate",
     headers : {'Accept-Encoding' : 'gzip'},
     dataType: "script",
     success: function() {
@@ -668,10 +669,9 @@ var bernieCharts = function(overallData) {
     that.draw(params);
     $("select#states,#global-filters input[name='state']").val(params.state);
 
-
     if (params.enddate && params.startdate) {
-      $("#global-filters input[name='from-date']").val(params.startdate);
-      $("#global-filters input[name='to-date']").val(params.enddate);
+      $("#global-filters input[name='startdate']").val(params.startdate);
+      $("#global-filters input[name='enddate']").val(params.enddate);
 
       $("#date-filter").data('dateRangePicker').setDateRange(humanFormat(dateFormat.parse(params.startdate)), humanFormat(dateFormat.parse(params.enddate)));
     } else {
