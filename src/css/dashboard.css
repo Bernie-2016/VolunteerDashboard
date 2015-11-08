@@ -46,8 +46,7 @@ section#filters {
   width: 210px;
   height: calc(100vh - 100px);
   padding: 20px;
-  background: whitesmoke;
-  border-right: 3px solid rgba(211, 211, 211, 0.14); }
+  background: whitesmoke; }
   section#filters h1 {
     margin: 0;
     font-size: 24px;
@@ -69,6 +68,12 @@ section#filters {
       color: gray;
       margin: 0;
       padding-bottom: 2px; }
+      section#filters div.filter-item h4 .show-hide-all {
+        float: right;
+        text-decoration: none;
+        font-size: 10px;
+        text-transform: uppercase;
+        margin-top: 1px; }
     section#filters div.filter-item div.filter-item-container {
       overflow: auto;
       max-height: calc(45vh - 16px - 113px);
@@ -91,10 +96,17 @@ section#filters {
               vertical-align: top;
               display: inline-block; }
               section#filters div.filter-item div.filter-item-container ul .filter-item-list input[type='checkbox'] ~ label span.checker {
-                color: gray;
-                padding-right: 3px; }
+                background-color: lightgray;
+                border-radius: 50%;
+                width: 8px;
+                height: 8px;
+                display: inline-block;
+                margin-right: 3px;
+                border: whitesmoke solid 2px;
+                margin-top: 2px; }
           section#filters div.filter-item div.filter-item-container ul .filter-item-list input[type='checkbox']:checked ~ label span.checker {
-            color: #147FD7; }
+            background-color: #147FD7;
+            border: white solid 2px; }
       section#filters div.filter-item div.filter-item-container#type-filter-list ul li.filter-item-list label span.namer {
         width: 180px; }
       section#filters div.filter-item div.filter-item-container#region-filter-list ul li.filter-item-list {
@@ -123,12 +135,22 @@ section#charts {
     margin: 0;
     font-size: 24px;
     font-weight: 100;
-    border-bottom: 1px solid #EBEBEB;
-    padding-bottom: 20px;
-    margin-bottom: 20px; }
+    padding-bottom: 0px;
+    margin-bottom: 0px; }
+    section#charts h1 #state-target {
+      vertical-align: bottom;
+      margin-top: 10px;
+      display: inline-block;
+      margin-left: 10px; }
     section#charts h1 #date-filter-container {
       float: right;
-      position: relative; }
+      position: relative;
+      margin-top: 10px;
+      border: 1px solid whitesmoke;
+      padding: 13px 33px;
+      border-radius: 5px; }
+      section#charts h1 #date-filter-container #date-filter {
+        font-size: 15px; }
       section#charts h1 #date-filter-container h5 {
         font-size: 11px;
         margin: 0;
@@ -151,10 +173,34 @@ section#charts {
       font-family: 'Open Sans';
       font-size: 15px;
       width: 110px; }
+  section#charts div#mode-area {
+    font-size: 15px; }
+    section#charts div#mode-area ul {
+      margin: 0;
+      padding: 0; }
+      section#charts div#mode-area ul li {
+        margin: 0 10px;
+        list-style: none;
+        display: inline-block; }
+        section#charts div#mode-area ul li:first-child {
+          margin-left: 0; }
+        section#charts div#mode-area ul li label {
+          padding: 0 2px 2px;
+          font-size: 12px;
+          text-transform: uppercase;
+          cursor: pointer;
+          color: gray; }
+        section#charts div#mode-area ul li input[name='mode'] {
+          display: none; }
+        section#charts div#mode-area ul li input[name='mode']:checked ~ label {
+          border: solid #147FD7;
+          color: #147FD7;
+          border-width: 0 0 2px 0;
+          padding-bottom: 0;
+          font-weight: 600; }
   section#charts div.chart-group h2 {
     padding-top: 20px;
-    border-top: 1px solid #EBEBEB;
-    margin-top: 20px; }
+    margin-top: 10px; }
   section#charts div.chart-group.first h2 {
     margin-top: 0;
     border: none; }
@@ -162,6 +208,11 @@ section#charts {
     border: none;
     padding-top: 0;
     margin-top: 0; }
+  section#charts div.chart-group div.c3-tooltip-container {
+    top: 0px !important; }
+  section#charts div.chart-group div.custom-c3-tooltip-container h4 {
+    color: white;
+    background-color: gray; }
   section#charts div.chart-group div.overall-growth {
     margin-bottom: 20px; }
     section#charts div.chart-group div.overall-growth ul li {

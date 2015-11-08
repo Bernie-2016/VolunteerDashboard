@@ -10,10 +10,14 @@ var nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate()+30);
 var bernieChartInstance = null;
 
 $.ajax({
-    url: "./js/aggregated-data.js",
+  // url: "./js/aggregated-data.js",
+    url: "http://organize.berniesanders.com/event-counter/aggregate",
+    // data: {
+    //   time_type: '"start_dt"'
+    // },
+    headers : {'Accept-Encoding' : 'gzip'},
     dataType: "script",
     success: function() {
-      console.log(window.aggregatedData);
       bernieChartInstance = new bernieCharts(window.aggregatedData);
       $("div#loader").hide();
     }
@@ -47,7 +51,7 @@ $.ajax({
 //     return hash;
 //   }, {total: {}});
 
-//     console.log(JSON.stringify(city_week));
+
 
 //     bernieChartInstance = new bernieCharts(city_week);
 //     $("div#loader").hide();
@@ -129,7 +133,7 @@ var bernieCharts = function(overallData) {
     that.startDate.setHours(0); that.startDate.setMinutes(0); that.startDate.setSeconds(0);
     that.endDate.setHours(23); that.endDate.setMinutes(59); that.endDate.setSeconds(59);
 
-    // console.log(that.startDate, that.endDate);
+
     // // that.draw(params);
     // for (var regionInd in that.viewedData) {
     //   for (var dateInd in that.viewedData[regionInd]) {
@@ -141,11 +145,32 @@ var bernieCharts = function(overallData) {
 
   };
 
+  this.compute_totals = function(overallData) {
+    // The totals are not sent through; reconstruct here
+    target_state = {};
+    for ( state in overallData ) {
+        cstate = target_state[state] = target_state[state] || {};
+        for ( clregion in overallData[state] ) {
+            for ( date in overallData[state][clregion] ) {
+                cdate = cstate[date] = cstate[date] || {};
+                for ( event_type in overallData[state][clregion][date] ) {
+                    cevent_type = cdate[event_type] = cdate[event_type] || {};
+                    for ( counttype in overallData[state][clregion][date][event_type] ) {
+                        cevent_type[counttype] = cevent_type[counttype] || 0;
+                        cevent_type[counttype] += overallData[state][clregion][date][event_type][counttype];
+                    }
+                }
+            }
+        }
+    }
+    return target_state;
+  }
+
   //Filter by state
   this.filterState = function(params) {
     var that = this;
     if (params.state == "all") {
-      that.viewedData = that.overallData.total;
+      that.viewedData = this.compute_totals(that.overallData);
       $("#state-target").text("All States");
     } else {
       that.viewedData = that.overallData[params.state];
@@ -175,8 +200,8 @@ var bernieCharts = function(overallData) {
     var target_state = that.viewedData;
     // Take data and set name
     if (params.state == "all") {
-      target_state = that.overallData.total;
       $("#state-target").text("All States");
+      target_state = this.compute_totals(that.overallData);
     } else {
       target_state = that.overallData[params.state];
       $("#state-target").text(that.constant.states[params.state]);
@@ -194,10 +219,10 @@ var bernieCharts = function(overallData) {
         //If date is within the date ranges
         var currDate = dateFormat.parse(date);
 
-        // console.log(region, currDate);
+
         if ( currDate < startDate || currDate > endDate )  {
 
-          // console.log("REJECTED", region, currDate);
+
           delete dateList[date];
           continue;
         } else {
@@ -239,7 +264,7 @@ var bernieCharts = function(overallData) {
       }
     } // end of arranging data
 
-    // console.log(mapOverall);
+
 
     var dateArray = [];
     for(date in dateList) { dateArray.push(date); }
@@ -304,7 +329,7 @@ var bernieCharts = function(overallData) {
           .html(function(d) {
             return "<input type='checkbox' value='"+ d +"' name='r' id='" + d + "' " +
               (params.r && params.r.indexOf(d)>=0 ? "" : "checked='checked'" )
-              +"/><label for='" + d + "'><span class='checker'>&#9673;</span><span class='namer'>" + d + "</span></label>"
+              +"/><label for='" + d + "'><span class='checker'></span><span class='namer'>" + d + "</span></label>"
           });
     }
 
@@ -318,7 +343,7 @@ var bernieCharts = function(overallData) {
         .html(function(d) {
           return "<input type='checkbox' value='"+ d +"' name='t' id='" + d + "' " +
           (params.t && params.t.indexOf(d)>=0 ?  "" : "checked='checked'")
-          +"/><label for='" + d + "'><span class='checker'>&#9673;</span><span class='namer'>" + d + "</span></label>"
+          +"/><label for='" + d + "'><span class='checker'></span><span class='namer'>" + d + "</span></label>"
         })
 
     that.typeFilter.exit().style("display", "none");
@@ -343,9 +368,47 @@ var bernieCharts = function(overallData) {
               x: {
                   type: 'timeseries',
                   tick: {
-                      format: 'Week of %b %d'
+                      format: 'Week starting %b %d'
                   }
               }
+          },
+
+          tooltip: {
+            format: {
+              value: function(value, ratio, id) {
+                if (value > 0) {
+                  return value;
+                }
+              }
+            }
+            // grouped: true,
+            // contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
+            //   console.log(d, defaultValueFormat, defaultValueFormat, color);
+
+            //   var mapped = d.map(function(item) {
+
+            //     if (item.value == 0) {
+            //       return null;
+            //     } else {
+
+            //       // console.log(, defaultValueFormat(item.value), color(item.id));
+            //       return "<li class='item-list-item'><span class='item-title'><span class='item-block' style='background-color: " + color(item.id) + "'></span>" + item.name + "</span><span class='item-value'>" + defaultValueFormat(item.value)+ "</span></li>";
+            //     }
+            //   }).filter(function(item) { return item != null; });
+
+            //   if (mapped.length == 0) {
+            //     return null;
+            //   }
+
+            //   var mapTable = "<div class='custom-c3-tooltip-container' style='position: absolute; top: 0px !important;'><h4>" + defaultTitleFormat(d[0].x) + "</h4><ul>" +
+            //         mapped.join("")
+            //   +"</ul></div>";
+            //   console.log(mapTable);
+
+
+            //   return mapTable;
+            //   // return "X";
+            // }
           }
         }); //end chartRegRsvp
      } // End of building charts for Region Event Counts
@@ -364,11 +427,19 @@ var bernieCharts = function(overallData) {
           types: typeGroup.reduce(function(hash, obj) { hash[obj] = 'area-step'; return hash; }, {}),
           groups:[typeGroup]
         },
+        tooltip: {
+        format: {
+          value: function(value, ratio, id) {
+            if (value > 0) {
+              return value;
+            }
+          }
+        }},
         axis: {
             x: {
                 type: 'timeseries',
                 tick: {
-                    format: 'Week of %b %d'
+                    format: 'Week starting %b %d'
                 }
             }
         }
@@ -389,11 +460,18 @@ var bernieCharts = function(overallData) {
           types: regionGroup.reduce(function(hash, obj) { hash[obj] = 'area-spline'; return hash; }, {}),
           groups:[regionGroup],
         },
+        tooltip: {format: {
+          value: function(value, ratio, id) {
+            if (value > 0) {
+              return value;
+            }
+          }
+        }},
         axis: {
             x: {
                 type: 'timeseries',
                 tick: {
-                    format: 'Week of %b %d'
+                    format: 'Week starting %b %d'
                 }
             }
         }
@@ -415,11 +493,18 @@ var bernieCharts = function(overallData) {
           types: typeGroup.reduce(function(hash, obj) { hash[obj] = 'area-step'; return hash; }, {}),
           groups:[typeGroup]
         },
+        tooltip: { format: {
+          value: function(value, ratio, id) {
+            if (value > 0) {
+              return value;
+            }
+          }
+        }},
         axis: {
             x: {
                 type: 'timeseries',
                 tick: {
-                    format: 'Week of %b %d'
+                    format: 'Week starting %b %d'
                 }
             }
         }
@@ -519,7 +604,7 @@ var bernieCharts = function(overallData) {
                       show: false,
                       type: 'timeseries',
                       tick: {
-                          format: 'Week of %b %d'
+                          format: 'Week starting %b %d'
                       }
                   },
                   y: {
@@ -617,7 +702,7 @@ var bernieCharts = function(overallData) {
                       show: false,
                       type: 'timeseries',
                       tick: {
-                          format: 'Week of %b %d'
+                          format: 'Week starting %b %d'
                       }
                   },
                   y: {
@@ -647,15 +732,24 @@ var bernieCharts = function(overallData) {
     that.draw(params);
     $("select#states,#global-filters input[name='state']").val(params.state);
 
-    // console.log(params.startdate);
     if (params.enddate && params.startdate) {
-      $("#global-filters input[name='from-date']").val(params.startdate);
-      $("#global-filters input[name='to-date']").val(params.enddate);
-      // console.log(humanFormat(dateFormat.parse(params.startdate)), humanFormat(dateFormat.parse(params.enddate)));
+      $("#global-filters input[name='startdate']").val(params.startdate);
+      $("#global-filters input[name='enddate']").val(params.enddate);
+
       $("#date-filter").data('dateRangePicker').setDateRange(humanFormat(dateFormat.parse(params.startdate)), humanFormat(dateFormat.parse(params.enddate)));
     } else {
       $("#date-filter").data('dateRangePicker').setDateRange(humanFormat(that.startDate), humanFormat(that.endDate));
     }
+
+    $(".filter-item-container").each(function() {
+      var target = $(this);
+        var that = $("[data-target='#" + target.attr("id") + "']");
+      if( target.find("input[type='checkbox']:checked").length < target.find("input[type='checkbox']").length ) {
+        that.text("Show All");
+      } else {
+        that.text("Hide All");
+      }
+    });
 
   };
 
@@ -665,6 +759,7 @@ var bernieCharts = function(overallData) {
 
 /* Set event listeners*/
 $(function() {
+
    /* Initialize datepicker */
   $("#date-filter").dateRangePicker({
     separator : ' - ',
@@ -685,7 +780,7 @@ $(function() {
     }
   })
   .bind('datepicker-change', function(event, obj) {
-    // console.log(dateFormat(obj.date1));
+
     $("#global-filters input[name='startdate']").val(dateFormat(obj.date1));
     $("#global-filters input[name='enddate']").val(dateFormat(obj.date2));
     $("#global-filters").submit();
@@ -693,6 +788,18 @@ $(function() {
 
   $("#global-filters").on("change", "input[type='checkbox']", function() {
     // alert("XXXX");
+
+      var target = $(this).closest(".filter-item-container");
+      var that = $("[data-target='#" + target.attr("id") + "']");
+
+
+    if( target.find("input[type='checkbox']:checked").length < target.find("input[type='checkbox']").length ) {
+      that.text("Show All");
+    } else {
+      that.text("Hide All");
+    }
+
+    //submit
     $("#global-filters").submit();
   });
 
@@ -716,9 +823,29 @@ $(function() {
     // $("#global-filters").
   });
 
+  $(".show-hide-all").on("click", function(e) {
+    var that = $(this);
+    var target = $(that.data().target);
+
+    if( target.find("input[type='checkbox']:checked").length < target.find("input[type='checkbox']").length ) {
+
+      target.find("input[type='checkbox']").prop("checked", true);
+      that.text("Hide All");
+    } else {
+      target.find("input[type='checkbox']").prop("checked", false);
+      that.text("Show All");
+    }
+
+    $("#global-filters").submit();
+  });
+
   $(window).on("hashchange", function() {
       var parameters = $.deparam(window.location.hash.substring(1));
       bernieChartInstance.draw(parameters);
       $("div#loader").hide();
   });
+
+  //Mark
+
+
 });
