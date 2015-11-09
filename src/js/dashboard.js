@@ -10,8 +10,8 @@ var nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate()+30);
 var bernieChartInstance = null;
 
 $.ajax({
-  url: "./js/aggregated-data.js",
-    // url: "http://organize.berniesanders.com/event-counter/aggregate",
+  // url: "./js/aggregated-data.js",
+    url: "http://organize.berniesanders.com/event-counter/aggregate",
     // data: {
     //   time_type: '"start_dt"'
     // },
