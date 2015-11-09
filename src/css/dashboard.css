@@ -10,6 +10,20 @@ body {
   body a {
     color: #147FD7; }
 
+.list-options {
+  font-size: 14px;
+  margin-left: 10px; }
+  .list-options ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none; }
+    .list-options ul li {
+      margin-left: 10px;
+      display: inline-block;
+      text-transform: uppercase; }
+      .list-options ul li a {
+        text-decoration: none; }
+
 header {
   width: 100vw;
   height: 60px;
@@ -122,6 +136,36 @@ section#charts {
   padding: 20px;
   height: calc(100vh - 100px);
   overflow: auto; }
+  section#charts > div.view-area {
+    visibility: hidden;
+    height: 0; }
+  section#charts[data-mode='chart'] > div.view-area[data-type=chart] {
+    visibility: visible;
+    height: auto; }
+  section#charts[data-mode='tabular'] > div.view-area[data-type=tabular] {
+    visibility: visible;
+    height: auto; }
+  section#charts div.view-area[data-type=tabular] .tabular-region h5 {
+    margin-bottom: 0; }
+  section#charts div.view-area[data-type=tabular] .tabular-region table {
+    max-width: 100%;
+    font-size: 11px;
+    text-align: left; }
+    section#charts div.view-area[data-type=tabular] .tabular-region table th {
+      text-align: center;
+      background-color: whitesmoke; }
+    section#charts div.view-area[data-type=tabular] .tabular-region table th, section#charts div.view-area[data-type=tabular] .tabular-region table td {
+      min-width: 100px;
+      margin: 0;
+      padding: 2px 2px; }
+    section#charts div.view-area[data-type=tabular] .tabular-region table tr:hover td {
+      background-color: #147FD7;
+      color: white;
+      font-weight: bold; }
+    section#charts div.view-area[data-type=tabular] .tabular-region table tr td {
+      text-align: center; }
+    section#charts div.view-area[data-type=tabular] .tabular-region table tr td:first-child {
+      text-align: left; }
   section#charts div#loader {
     position: fixed;
     left: calc(74px + 50vw);
@@ -132,6 +176,7 @@ section#charts {
     z-index: 2000;
     font-size: 11px; }
   section#charts h1 {
+    position: relative;
     margin: 0;
     font-size: 24px;
     font-weight: 100;
@@ -144,8 +189,10 @@ section#charts {
       margin-left: 10px; }
     section#charts h1 #date-filter-container {
       float: right;
-      position: relative;
+      position: absolute;
       margin-top: 10px;
+      top: 0;
+      right: 0;
       border: 1px solid whitesmoke;
       padding: 13px 33px;
       border-radius: 5px; }
@@ -172,7 +219,7 @@ section#charts {
       text-align: center;
       font-family: 'Open Sans';
       font-size: 15px;
-      width: 110px; }
+      width: 210px; }
   section#charts div#mode-area {
     font-size: 15px; }
     section#charts div#mode-area ul {
@@ -247,5 +294,10 @@ section#charts {
   section#charts h4 {
     font-size: 12px;
     color: gray; }
+
+/** FOR PRNIT **/
+@media print {
+  .print-item.no-print {
+    display: none; } }
 
 /*# sourceMappingURL=dashboard.css.map */

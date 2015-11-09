@@ -21,7 +21,7 @@
 </script>
 </head>
 <body>
-<header>
+<header class='print-item no-print'>
   <div id='logo'>
     <img src='./logo.png'>
     <span>Event Analytics</span>
@@ -33,13 +33,22 @@
   </a>
 
 </header>
-<section id='filters'>
+<section id='filters' class='print-item no-print'>
   <h1>Global Filters</h1>
   <sub>Changes data composition of the whole event analytics</sub>
   <form id='global-filters'>
     <input type='hidden' name='state' value='all'>
     <input type='hidden' name='startdate' />
     <input type='hidden' name='enddate' />
+    <input type='hidden' name='view' value='chart'/>
+
+   <!--  <div class='filter-item data-mode'>
+      <h4>Data Mode</h4>
+      <select name='mode'>
+        <option value='mode-creation'>Event Creation</option>
+        <option value='mode-engagement'>Engagement / Activity</option>
+      </select>
+    </div> -->
 
     <div class='filter-item region-filter'>
       <h4>Region Filters <span class='filter-counter'></span>
@@ -58,14 +67,20 @@
   </form>
 
 </section>
-
-<section id='charts'>
-  <div id='loader'>Loading Data...</div>
-  <h1>
+<section id='charts' data-mode=''>
+  <div id='loader' class='print-item no-print'>Loading Data...</div>
+  <h1 class='print-item print'>
     <span id='state-target'></span>
-    <span id='date-filter-container'>
+    <span id='view-modes' class='list-options print-item no-print'>
+      <ul>
+        <li><a href='javascript: void(null);' onclick="$('#global-filters input[name=view]').val('chart').trigger('change');">Charts</a></li>
+        <li><a href='javascript: void(null);' onclick="$('#global-filters input[name=view]').val('tabular').trigger('change');">Tables</a></li>
+        <!-- <li><a href='javascript: void(null);' onclick="$('#global-filters input[name=view]').val('map').trigger('change'); ">Map</a></li> -->
+      </ul>
+    </span>
+    <span id='date-filter-container' class='print-item no-print'>
       <h5>Date Filter</h5>
-      <span id='date-filter'><input type='text' name='from-date' id='from-date'/> - <input type='' name='to-date' id='to-date' /></span>
+      <span id='date-filter'><input type='text' name='date-range-picker'/></span>
     </span>
     <!-- <div id='mode-area'>
       <ul id='mode-list'>
@@ -81,36 +96,50 @@
       </ul>
     </div> -->
   </h1>
-
-
-  <div class='chart-group' data-mode='event-count'>
-    <h2>Event Count</h2>
-    <h4>Events By Region</h4>
-    <div id='by-region'></div>
-    <h4>Events By Type</h4>
-    <div id='by-type'></div>
-  </div>
-
-  <div class='chart-group' data-mode='rsvp'>
-    <h2>RSVPs</h2>
-    <h4>RSVP By Region</h4>
-    <div id='rsvp-by-region'></div>
-    <h4>RSVP By Type</h4>
-    <div id='rsvp-by-type'></div>
-  </div>
-
-  <div class='chart-group' data-mode='growth'>
-    <h2>Growth</h2>
-    <h4>Accumulative Growth of Events </h4>
-    <div class='overall-growth event-region'>
+  <div class='view-area print-item print' data-type='tabular'>
+    <!-- <aside id='tabular-options' class='list-options print-item no-print'>
       <ul>
+        <li><a href='javascript: void(null); window.print();'>Print</a></li>
+        <li><a href='#'>Export</a></li>
       </ul>
+    </aside> -->
+    <div class='print-item print'>
+      <div class='tabular-area tabular-events'>
+      </div>
+    </div>
+  </div>
+
+  <div class='view-area print-item no-print' data-type='map'></div>
+  <div class='view-area print-item no-print' data-type='chart'>
+    <div class='chart-group' data-mode='event-count'>
+      <h2>Event Count</h2>
+      <h4>Events By Region</h4>
+      <div id='by-region'></div>
+      <h4>Events By Type</h4>
+      <div id='by-type'></div>
     </div>
 
-    <h4>Accumulative Growth of RSVP </h4>
-    <div id='growth-by-region' class='overall-growth rsvp-region'>
-      <ul>
-      </ul>
+   <!--  <div class='chart-group' data-mode='rsvp'>
+      <h2>RSVPs</h2>
+      <h4>RSVP By Region</h4>
+      <div id='rsvp-by-region'></div>
+      <h4>RSVP By Type</h4>
+      <div id='rsvp-by-type'></div>
+    </div> -->
+
+    <div class='chart-group' data-mode='growth'>
+      <h2>Growth</h2>
+      <h4>Accumulative Growth of Events </h4>
+      <div class='overall-growth event-region'>
+        <ul>
+        </ul>
+      </div>
+
+      <!-- <h4>Accumulative Growth of RSVP </h4>
+      <div id='growth-by-region' class='overall-growth rsvp-region'>
+        <ul>
+        </ul>
+      </div> -->
     </div>
   </div>
 

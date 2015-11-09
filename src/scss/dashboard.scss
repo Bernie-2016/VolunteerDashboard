@@ -25,6 +25,22 @@ body {
   overflow: hidden;
 }
 
+.list-options {
+  font-size: 14px;
+  margin-left: 10px;
+
+  ul {
+    padding: 0; margin: 0;
+    list-style-type:  none;
+    li {
+      margin-left: 10px;
+      display: inline-block;
+      text-transform: uppercase;
+      a { text-decoration: none; }
+    }
+  }
+}
+
 header {
   width: 100vw;
   height: 60px;
@@ -160,6 +176,32 @@ section#filters {
 }
 
 section#charts {
+  & > div.view-area { visibility: hidden; height: 0;}
+  &[data-mode='chart'] > div.view-area[data-type=chart] { visibility: visible; height: auto;}
+  &[data-mode='tabular'] > div.view-area[data-type=tabular] { visibility: visible; height: auto; }
+
+  div.view-area[data-type=tabular] {
+    .tabular-region {
+      h5 { margin-bottom: 0; }
+      table {
+        max-width: 100%;
+        font-size: 11px;
+        text-align: left;
+
+        th { text-align: center; background-color: whitesmoke; }
+        th, td { min-width: 100px; margin: 0; padding: 2px 2px; }
+
+        tr {
+          &:hover {
+            td { background-color: $bernieblue; color: white; font-weight: bold;}
+          }
+          td { text-align: center; }
+          td:first-child { text-align: left} }
+
+      }
+    }
+  }
+
   div#loader {
     position: fixed;
     left: calc(74px + 50vw);
@@ -172,6 +214,7 @@ section#charts {
   }
 
   h1 {
+    position: relative;
     margin: 0; font-size: 24px;
     font-weight: 100;
     // border-bottom: 1px solid #EBEBEB;
@@ -189,8 +232,10 @@ section#charts {
 
     #date-filter-container {
       float: right;
-      position: relative;
+      position: absolute;
       margin-top: 10px;
+      top: 0;
+      right: 0;
 
       border: 1px solid whitesmoke;
       padding: 13px 33px;
@@ -229,7 +274,7 @@ section#charts {
     text-align: center;
     font-family: 'Open Sans';
     font-size: 15px;
-    width: 110px;
+    width: 210px;
 
       }
     }
@@ -329,4 +374,15 @@ section#charts {
     color: gray;
   }
 
+}
+
+
+/** FOR PRNIT **/
+@media print {
+  .print-item.print {
+    // display: block;
+  }
+  .print-item.no-print {
+    display: none;
+  }
 }
