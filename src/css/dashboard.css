@@ -12,7 +12,8 @@ body {
 
 .list-options {
   font-size: 14px;
-  margin-left: 10px; }
+  display: block;
+  margin-top: 10px; }
   .list-options ul {
     padding: 0;
     margin: 0;
@@ -122,10 +123,12 @@ section#filters {
             background-color: #147FD7;
             border: white solid 2px; }
       section#filters div.filter-item div.filter-item-container#type-filter-list ul li.filter-item-list label span.namer {
-        width: 180px; }
+        width: 150px; }
       section#filters div.filter-item div.filter-item-container#region-filter-list ul li.filter-item-list {
         display: inline-block;
         width: 48%; }
+        section#filters div.filter-item div.filter-item-container#region-filter-list ul li.filter-item-list label span.namer {
+          width: 78px; }
         section#filters div.filter-item div.filter-item-container#region-filter-list ul li.filter-item-list:nth-child(2n) {
           margin-right: 1%; }
 

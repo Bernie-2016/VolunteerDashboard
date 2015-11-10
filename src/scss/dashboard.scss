@@ -27,7 +27,9 @@ body {
 
 .list-options {
   font-size: 14px;
-  margin-left: 10px;
+  // margin-left: 10px;
+  display: block;
+  margin-top: 10px;
 
   ul {
     padding: 0; margin: 0;
@@ -160,12 +162,16 @@ section#filters {
 
 
       &#type-filter-list {
-        ul li.filter-item-list label span.namer { width: 180px;}
+        ul li.filter-item-list label span.namer { width: 150px;}
       }
       &#region-filter-list {
         ul li.filter-item-list {
           display: inline-block;
           width: 48%;
+
+          label span.namer {
+            width: 78px;
+          }
           &:nth-child(2n) {
             margin-right: 1%;
           }

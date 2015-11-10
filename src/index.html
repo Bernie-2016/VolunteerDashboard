@@ -36,8 +36,9 @@
 <section id='filters' class='print-item no-print'>
   <h1>Global Filters</h1>
   <sub>Changes data composition of the whole event analytics</sub>
+
   <form id='global-filters'>
-    <input type='hidden' name='state' value='all'>
+    <input type='hidden' name='state'>
     <input type='hidden' name='startdate' />
     <input type='hidden' name='enddate' />
     <input type='hidden' name='view' value='chart'/>
@@ -71,6 +72,13 @@
   <div id='loader' class='print-item no-print'>Loading Data...</div>
   <h1 class='print-item print'>
     <span id='state-target'></span>
+    <div style='    margin: 0;
+    padding: 0;
+    margin-left: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: lightgray;
+    letter-spacing: 3px;'>Event Creation Stats</div>
     <span id='view-modes' class='list-options print-item no-print'>
       <ul>
         <li><a href='javascript: void(null);' onclick="$('#global-filters input[name=view]').val('chart').trigger('change');">Charts</a></li>
