@@ -10,8 +10,8 @@ var nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate()+30);
 var bernieChartInstance = null;
 
 $.ajax({
-  // url: "./js/aggregated-data.js",
-    url: "http://organize.berniesanders.com/event-counter/aggregate",
+  url: "./js/aggregated-data.js",
+    // url: "http://organize.berniesanders.com/event-counter/aggregate",
     // data: {
     //   time_type: '"start_dt"'
     // },
@@ -737,11 +737,22 @@ var bernieCharts = function(overallData) {
 
               });
 
+              //Convert from object to array
               var cellData = __regionArray.map(function(d) {
                 return [humanFormat(dateFormat.parse(d.date))].concat(__typeArray.map(function(g) {
                     return d[g] ? d[g].count : "-";
                 }));
               });
+
+              //Sort from latest to earliest
+              cellData = cellData.sort(function(a, b) {
+                var aDate = humanFormat.parse(a[0]);
+                var bDate = humanFormat.parse(b[0]);
+
+                return bDate - aDate;
+              });
+
+              // console.log(cellData);
 
               //Collate Region Array
 
