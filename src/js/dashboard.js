@@ -9,19 +9,29 @@ var nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate()+30);
 
 var bernieChartInstance = null;
 
+var query = $.deparam.querystring();
+var targetUrl;
+switch (query.mode) {
+  case "start": targetUrl = 'http://organize.berniesanders.com/event-counter/aggregate?time_type="start_dt"';
+    $("#mode-label").text("On-the-day Stats");
+
+  break;
+  case "create":
+  default: targetUrl = "http://organize.berniesanders.com/event-counter/aggregate";
+    $("#mode-label").text("Event Creation Stats");
+   break;
+};
+
 $.ajax({
-  // url: "./js/aggregated-data.js",
-    url: "http://organize.berniesanders.com/event-counter/aggregate",
-    // data: {
-    //   time_type: '"start_dt"'
-    // },
-    headers : {'Accept-Encoding' : 'gzip'},
-    dataType: "script",
-    success: function() {
-      bernieChartInstance = new bernieCharts(window.aggregatedData);
-      $("div#loader").hide();
-    }
-  });
+  // url: ,
+  url: targetUrl,
+  headers : {'Accept-Encoding' : 'gzip'},
+  dataType: "script",
+  success: function() {
+    bernieChartInstance = new bernieCharts(window.aggregatedData);
+    $("div#loader").hide();
+  }
+});
 
 
 var bernieCharts = function(overallData) {
@@ -78,7 +88,6 @@ var bernieCharts = function(overallData) {
                   }
               }
           },
-
           tooltip: {
             format: {
               value: function(value, ratio, id) {

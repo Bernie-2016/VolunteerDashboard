@@ -28,9 +28,17 @@
     <select id='states' name='event-states'></select>
   </div>
 
-  <a href='https://go.berniesanders.com/page/s/project-leader-vol' target='_blank' id='project-lead'>
-    Be a Special Project Leader
-  </a>
+<nav>
+  <ul>
+    <li><a href='/index.html?mode=start'>On-the-Day Stats</a></li>
+    <li><a href='/'>Creation Stats</a></li>
+    <li>
+      <a href='https://go.berniesanders.com/page/s/project-leader-vol' target='_blank' id='project-lead'>
+        Be a Special Project Leader
+      </a>
+    </li>
+  </ul>
+</nav>
 
 </header>
 <section id='filters' class='print-item no-print'>
@@ -50,6 +58,7 @@
         <option value='mode-engagement'>Engagement / Activity</option>
       </select>
     </div> -->
+    <!-- v -->
 
     <div class='filter-item region-filter'>
       <h4>Region Filters <span class='filter-counter'></span>
@@ -72,13 +81,7 @@
   <div id='loader' class='print-item no-print'>Loading Data...</div>
   <h1 class='print-item print'>
     <span id='state-target'></span>
-    <div style='    margin: 0;
-    padding: 0;
-    margin-left: 10px;
-    font-size: 14px;
-    text-transform: uppercase;
-    color: lightgray;
-    letter-spacing: 3px;'>Event Creation Stats</div>
+    <div id='mode-label'>Event Creation Stats</div>
     <span id='view-modes' class='list-options print-item no-print'>
       <ul>
         <li><a href='javascript: void(null);' onclick="$('#global-filters input[name=view]').val('chart').trigger('change');">Charts</a></li>

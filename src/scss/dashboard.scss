@@ -57,22 +57,33 @@ header {
   div#logo { float: left; }
   nav {
     float: right;
-  }
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 10px 0 0;
+      li {
+        margin-left: 15px;
+        display: inline-block;
 
-  a#project-lead {
-    padding: 6px 10px;
-    background-color: $berniered;
-    color: white;
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 1px;
-    float: right;
-    margin-top: 15px;
-    text-decoration: none;
-    margin-right: 8px;
-    border-radius: 4px;
+        a { text-decoration: none; font-size: 11px; letter-spacing: 1px; text-transform: uppercase;}
+        a#project-lead {
+          padding: 6px 10px;
+          background-color: $berniered;
+          color: white;
+          text-transform: uppercase;
+          font-weight: 600;
+          font-size: 11px;
+          letter-spacing: 1px;
+          margin-top: 15px;
+          text-decoration: none;
+          margin-right: 8px;
+          border-radius: 4px;
 
+        }
+
+        &:first-child { margin-left: 0; }
+      }
+    }
   }
 }
 
@@ -164,13 +175,20 @@ section#filters {
       &#type-filter-list {
         ul li.filter-item-list label span.namer { width: 150px;}
       }
+      &#mode-list {
+       ul li {
+        font-size: 11px;
+        list-style-type: circle;
+        a { text-decoration: none; }
+       }
+      }
       &#region-filter-list {
         ul li.filter-item-list {
           display: inline-block;
-          width: 48%;
+          width: 87px;
 
           label span.namer {
-            width: 78px;
+            width: 70px;
           }
           &:nth-child(2n) {
             margin-right: 1%;
@@ -234,6 +252,16 @@ section#charts {
     display: inline-block;
     margin-left: 10px;
 
+    }
+
+    #mode-label {
+      margin: 0;
+      padding: 0;
+      margin-left: 10px;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: lightgray;
+      letter-spacing: 3px;
     }
 
     #date-filter-container {
