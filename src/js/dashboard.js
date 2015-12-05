@@ -586,6 +586,10 @@ var bernieCharts = function(overallData) {
             });
 
             // Building the chart
+	    total_values = d.slice(0);
+	    total_values[0] = "Total events to date";
+	    weekly_values = growth.slice(0);
+	    weekly_values[0] = "Events each week";
             that.regionGrowthEvents[d[0]] = c3.generate({
               size: {
                 height: 150
@@ -593,7 +597,7 @@ var bernieCharts = function(overallData) {
               bindto: $(this).children(".overall-growth-item")[0],
               data: {
                 x: 'date',
-                columns: [].concat([dateCol], [d], [growth]),
+                columns: [].concat([dateCol], [total_values], [weekly_values]),
                 type: 'area',
                 axes: {
                   growth: 'y2'
