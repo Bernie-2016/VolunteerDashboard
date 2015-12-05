@@ -13,12 +13,12 @@ var query = $.deparam.querystring();
 var targetUrl;
 switch (query.mode) {
   case "start": targetUrl = 'http://organize.berniesanders.com/event-counter/aggregate?time_type="start_dt"';
-    $("#mode-label").text("On-the-day Stats");
+    $("#mode-label").text("Stats by Day of Event");
 
   break;
   case "create":
   default: targetUrl = "http://organize.berniesanders.com/event-counter/aggregate";
-    $("#mode-label").text("Event Creation Stats");
+    $("#mode-label").text("Stats by Day of Event-Creation");
    break;
 };
 
