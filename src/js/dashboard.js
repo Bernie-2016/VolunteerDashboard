@@ -1,3 +1,11 @@
+if (document.URL.startswith('https://') {
+    // Moving the backend to SSL would cost $20/month on heroku, and
+    // attempting to access it unencrypted when the frontend is
+    // accessed via SSL results in a mixed-content error.  So
+    // downgrade front end http.
+    window.location = document.URL.replace('https://', 'http://');
+}
+
 var city_week = null;
 var all = null;
 var timeFormat = d3.time.format("%m/%d/%Y %X");
