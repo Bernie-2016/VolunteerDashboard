@@ -38,6 +38,9 @@ $.ajax({
   success: function() {
     bernieChartInstance = new bernieCharts(window.aggregatedData);
     $("div#loader").hide();
+  },
+    error: function (xhrObj, statusText, errorThrown) {
+	alert('Failure accessing event data: ' + statusText + '.  Error status: ' + String(xhrObj.status));
   }
 });
 
