@@ -1,4 +1,4 @@
-if (document.URL.startswith('https://')) {
+if (document.URL.startsWith('https://')) {
     // Moving the backend to SSL would cost $20/month on heroku, and
     // attempting to access it unencrypted when the frontend is
     // accessed via SSL results in a mixed-content error.  So
